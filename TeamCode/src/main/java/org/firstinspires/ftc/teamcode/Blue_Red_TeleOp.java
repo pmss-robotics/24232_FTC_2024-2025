@@ -26,9 +26,9 @@ import org.firstinspires.ftc.teamcode.subsystems.FeedforwardArmSubsystem;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
+//hello
 @Config
-@TeleOp(name = "SAMPLE", group = "TeleOp")
+@TeleOp(name = "PENGY", group = "TeleOp")
 public class Blue_Red_TeleOp extends CommandOpMode {
     @Override
     public void initialize() {
