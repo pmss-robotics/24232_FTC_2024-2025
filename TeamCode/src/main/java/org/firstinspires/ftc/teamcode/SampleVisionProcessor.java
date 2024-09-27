@@ -7,6 +7,7 @@ import org.firstinspires.ftc.vision.VisionProcessor;
 import org.opencv.core.Mat;
 
 public class SampleVisionProcessor implements VisionProcessor {
+
     public SampleVisionProcessor(){
         // constructor elements
     }
