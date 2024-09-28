@@ -27,7 +27,7 @@ public class IntakeSlides extends SubsystemBase {
 
     @Override
     public void periodic() {
-        telemetry.addData("Intake", intake.get());
+        telemetry.addData("GenericServoSubsystem", intake.get());
         telemetry.update();
     }
 

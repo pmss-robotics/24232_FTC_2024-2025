@@ -6,71 +6,87 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.arcrobotics.ftclib.command.CommandOpMode;
+import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.RunCommand;
+import com.arcrobotics.ftclib.command.button.GamepadButton;
+import com.arcrobotics.ftclib.command.button.Trigger;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.commands.ArmCommand;
+import org.firstinspires.ftc.teamcode.commands.ActionCommand;
 import org.firstinspires.ftc.teamcode.commands.DriveCommand;
-import org.firstinspires.ftc.teamcode.commands.IntakeCommand;
-import org.firstinspires.ftc.teamcode.commands.PowerIntakeCommand;
-import org.firstinspires.ftc.teamcode.commands.PowerOuttakeCommand;
 import org.firstinspires.ftc.teamcode.drive.Drawing;
 import org.firstinspires.ftc.teamcode.drive.MecanumDrive;
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
-import org.firstinspires.ftc.teamcode.subsystems.FeedforwardArmSubsystem;
-import org.firstinspires.ftc.teamcode.subsystems.Intake;
-import org.firstinspires.ftc.teamcode.subsystems.IntakeSlides;
-import org.firstinspires.ftc.teamcode.subsystems.OuttakeSlides;
+import org.firstinspires.ftc.teamcode.subsystems.GenericContinuousServoSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.GenericMotorSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.GenericPositionServoSubsystem;
 
 //hello
 @Config
-@TeleOp(name = "Testing", group = "TeleOp")
-public class Blue_Red_TeleOp extends CommandOpMode {
+@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOP", group = "TeleOp")
+public class TeleOp extends CommandOpMode {
+    public static double servoIncrement = 0.002;
+    public static double servoSpeed = 1;
     @Override
     public void initialize() {
-        // data sent to telemetry shows up on dashboard and driver station
+        // data sent to telemetry shows up on dashboard and driverGamepad station
         // data sent to the telemetry packet only shows up on the dashboard
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         telemetry.log().setDisplayOrder(Telemetry.Log.DisplayOrder.NEWEST_FIRST);
         telemetry.log().setCapacity(8);
         // GamepadEx wraps gamepad 1 or 2 for easier implementations of more complex key bindings
-        GamepadEx gamepadEx = new GamepadEx(gamepad1);
-        GamepadEx gamepadEx2 = new GamepadEx(gamepad2);
+        GamepadEx driver = new GamepadEx(gamepad1);
+        GamepadEx tools = new GamepadEx(gamepad2);
         // The driveSubsystem wraps Roadrunner's MecanumDrive to combine with Commands.
         DriveSubsystem drive = new DriveSubsystem(new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0)), telemetry);
         // The driveCommand uses methods defined in the DriveSubsystem to create behaviour.
         // we're passing in methods to get values instead of straight values because it avoids
         // disturbing the structure of the CommandOpMode. The aim is to define bindings in this
         // initialize() method through Commands and these will be looped and acted in the (hidden)
-        // run() loop. TODO we (me at least) should learn more about lambda expressions / functions as parameters.4
-
+        // run() loop.
         DriveCommand driveCommand = new DriveCommand(drive,
-                () -> -gamepadEx.getLeftX(),
-                () -> -gamepadEx.getLeftY(),
-                () -> -gamepadEx.getRightX(),
+                () -> -driver.getLeftX(),
+                () -> -driver.getLeftY(),
+                () -> -driver.getRightX(),
                 true);
 
-        OuttakeSlides outtakeSlides = new OuttakeSlides(hardwareMap, telemetry);
-        IntakeSlides intakeSlides = new IntakeSlides(hardwareMap, telemetry);
-        Intake intake = new Intake(hardwareMap, telemetry);
-        PowerIntakeCommand intakeCommand = new PowerIntakeCommand(intakeSlides,
-                () -> gamepadEx.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER),
-                () -> gamepadEx.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER));
-        intakeSlides.setDefaultCommand(intakeCommand);
-        PowerOuttakeCommand outtakeCommand = new PowerOuttakeCommand(outtakeSlides,
-                () -> gamepadEx2.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER),
-                () -> gamepadEx2.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER));
-        outtakeSlides.setDefaultCommand(outtakeCommand);
+        GenericMotorSubsystem genericMotorSubsystem = new GenericMotorSubsystem(hardwareMap, telemetry, "intakeMotor");
+        new Trigger(()-> tools.getRightY() != 0).whenActive(new InstantCommand(
+                () -> genericMotorSubsystem.setPower(tools::getRightY),
+                genericMotorSubsystem
+        ));
+
+        GenericPositionServoSubsystem genericPositionServoSubsystem = new GenericPositionServoSubsystem(hardwareMap, telemetry, "servo", 0.5);
+        genericPositionServoSubsystem.setDefaultCommand(new RunCommand(
+                        () -> genericPositionServoSubsystem.setPosition(genericPositionServoSubsystem.position)
+        ));
+        new GamepadButton(tools, GamepadKeys.Button.LEFT_BUMPER)
+                .whenActive(new InstantCommand(
+                        () -> genericPositionServoSubsystem.incrementPosition(-servoIncrement),
+                        genericPositionServoSubsystem
+                ));
+        new GamepadButton(tools, GamepadKeys.Button.RIGHT_BUMPER)
+                .whenActive(new InstantCommand(
+                        () -> genericPositionServoSubsystem.incrementPosition(servoIncrement),
+                        genericPositionServoSubsystem
+                ));
+
+        GenericContinuousServoSubsystem genericContinuousServoSubsystem = new GenericContinuousServoSubsystem(hardwareMap, telemetry, "servo");
+        // to trigger you can do something similar to whats done in genericMotorSubsystem or...
+        new GamepadButton(tools, GamepadKeys.Button.A).toggleWhenPressed(new InstantCommand(
+                () -> genericContinuousServoSubsystem.setPower(servoSpeed)));
+        new GamepadButton(tools, GamepadKeys.Button.B).toggleWhenPressed(new InstantCommand(
+                () -> genericContinuousServoSubsystem.setPower(-servoSpeed)));
+
 
         // sample for action and command synergy and binding
         // try to avoid this kind of usage as much as possible
         //SampleMechanism sampleMechanism = new SampleMechanism(hardwareMap);
         //Set<Subsystem> subsystemSet = Stream.of(drive).collect(Collectors.toSet());
         // the binding for whenPressed() is convenient since it only activates once even when A is held down.
-        //gamepadEx.getGamepadButton(GamepadKeys.Button.A).whenPressed(new ActionCommand(sampleMechanism.doSampleMechanismAction(), subsystemSet));
+        //driverGamepad.getGamepadButton(GamepadKeys.Button.A).whenPressed(new ActionCommand(sampleMechanism.doSampleMechanismAction(), subsystemSet));
 
         //TODO: see if this runs perpetually
         // also we might not want to be creating a new packet in each loop
@@ -87,9 +103,6 @@ public class Blue_Red_TeleOp extends CommandOpMode {
             FtcDashboard.getInstance().sendTelemetryPacket(packet);
         }));
         schedule(driveCommand);
-
-
-
     }
 
 
