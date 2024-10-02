@@ -51,7 +51,7 @@ public class TeleOp extends CommandOpMode {
                 () -> -driver.getLeftY(),
                 () -> -driver.getRightX(),
                 true);
-
+        /*
         GenericMotorSubsystem genericMotorSubsystem = new GenericMotorSubsystem(hardwareMap, telemetry, "intakeMotor");
         new Trigger(()-> tools.getRightY() != 0).whenActive(new InstantCommand(
                 () -> genericMotorSubsystem.setPower(tools::getRightY),
@@ -102,6 +102,8 @@ public class TeleOp extends CommandOpMode {
             Drawing.drawRobot(packet.fieldOverlay(), pose);
             FtcDashboard.getInstance().sendTelemetryPacket(packet);
         }));
+
+         */
         schedule(driveCommand);
     }
 
