@@ -9,11 +9,13 @@ import com.arcrobotics.ftclib.command.SubsystemBase;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.drive.MecanumDrive;
+import org.firstinspires.ftc.teamcode.drive.PinpointDrive;
+
 @Config
 public class DriveSubsystem extends SubsystemBase {
-    private final MecanumDrive drive;
+    private final PinpointDrive drive;
     private Telemetry telemetry;
-    public DriveSubsystem(MecanumDrive drive, Telemetry telemetry) {
+    public DriveSubsystem(PinpointDrive drive, Telemetry telemetry) {
         this.drive = drive;
         this.telemetry = telemetry;
     }
