@@ -20,6 +20,7 @@ import org.firstinspires.ftc.teamcode.drive.Drawing;
 import org.firstinspires.ftc.teamcode.drive.MecanumDrive;
 import org.firstinspires.ftc.teamcode.drive.PinpointDrive;
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.ExtendSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.GenericContinuousServoSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.GenericMotorSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.GenericPositionServoSubsystem;
@@ -51,6 +52,12 @@ public class TeleOp extends CommandOpMode {
                 () -> -driver.getLeftY(),
                 () -> -driver.getRightX(),
                 true);
+
+        ExtendSubsystem extendSubsystem = new ExtendSubsystem(hardwareMap, telemetry);
+        extendSubsystem.setDefaultCommand(new RunCommand(
+                () -> extendSubsystem.setPower(tools.getRightY()),
+                extendSubsystem
+        ));
         /*
         GenericMotorSubsystem genericMotorSubsystem = new GenericMotorSubsystem(hardwareMap, telemetry, "intakeMotor");
         genericMotorSubsystem.setDefaultCommand(new RunCommand(
