@@ -9,14 +9,13 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 // https://docs.ftclib.org/ftclib/command-base/command-system/subsystems
-// hi
 @Config
 public class ExtendSubsystem extends SubsystemBase {
 
     // declare hardware here
     Telemetry telemetry;
-    MotorEx intakeExtensionLeft;
-    MotorEx intakeExtensionRight;
+    MotorEx intakeExtensionUp;
+    MotorEx intakeExtensionFront;
 
 
 
@@ -24,25 +23,26 @@ public class ExtendSubsystem extends SubsystemBase {
         //initialize hardware here alongside other parameters
         this.telemetry = telemetry;
         //Set Motors
-        this.intakeExtensionLeft = new MotorEx(hardwareMap, "intakeExtensionLeft");
-        this.intakeExtensionRight = new MotorEx(hardwareMap, "intakeExtensionRight");
-        intakeExtensionLeft.setInverted(true);
+        this.intakeExtensionUp = new MotorEx(hardwareMap, "intakeExtensionUp");
+        this.intakeExtensionFront = new MotorEx(hardwareMap, "intakeExtensionFront");
         //When there is nothing for the motors to do
-        intakeExtensionLeft.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
-        intakeExtensionRight.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+        intakeExtensionUp.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+        intakeExtensionFront.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
 
 
     }
     @Override
     public void periodic() {
-        telemetry.addData("Intake Extension Position Thingie Left", intakeExtensionLeft.getCurrentPosition());
-        telemetry.addData("Intake Extension Position Thingie Right", intakeExtensionRight.getCurrentPosition());
+        //telemetry.addData("Intake Extension Position Thingie Left", intakeExtensionLeft.getCurrentPosition());
+        telemetry.addData("Intake Extension Position Thingie up", intakeExtensionUp.getCurrentPosition());
+        telemetry.addData("Intake Extension Position Thingie front", intakeExtensionFront.getCurrentPosition());
+
 
     }
 
     public void setPower(double power) {
-        intakeExtensionLeft.set(power);
-        intakeExtensionRight.set(power);
+        intakeExtensionUp.set(power);
+        intakeExtensionFront.set(power);
     }
 
 }
