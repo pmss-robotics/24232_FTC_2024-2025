@@ -1,5 +1,5 @@
 package org.firstinspires.ftc.teamcode;
-
+//This is port moody parrabellum team code
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
@@ -41,17 +41,17 @@ public class TeleOp extends CommandOpMode {
         GamepadEx driver = new GamepadEx(gamepad1);
         GamepadEx tools = new GamepadEx(gamepad2);
         // The driveSubsystem wraps Roadrunner's MecanumDrive to combine with Commands.
-        DriveSubsystem drive = new DriveSubsystem(new PinpointDrive(hardwareMap, new Pose2d(0, 0, 0)), telemetry);
+        // RAHHH DriveSubsystem drive = new DriveSubsystem(new PinpointDrive(hardwareMap, new Pose2d(0, 0, 0)), telemetry);
         // The driveCommand uses methods defined in the DriveSubsystem to create behaviour.
         // we're passing in methods to get values instead of straight values because it avoids
         // disturbing the structure of the CommandOpMode. The aim is to define bindings in this
         // initialize() method through Commands and these will be looped and acted in the (hidden)
         // run() loop.
-        DriveCommand driveCommand = new DriveCommand(drive,
+        /*DriveCommand driveCommand = new DriveCommand(drive,
                 () -> -driver.getLeftX(),
-                () -> -driver.getLeftY(),
+                () -> driver.getLeftY(),
                 () -> -driver.getRightX(),
-                true);
+                true);*/
 
         ExtendSubsystem extendSubsystem = new ExtendSubsystem(hardwareMap, telemetry);
         extendSubsystem.setDefaultCommand(new RunCommand(
@@ -122,7 +122,7 @@ public class TeleOp extends CommandOpMode {
         }));
 
          */
-        schedule(driveCommand);
+        //schedule(driveCommand);
     }
 
 

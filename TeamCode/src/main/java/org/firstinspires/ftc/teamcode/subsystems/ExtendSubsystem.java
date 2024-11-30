@@ -21,7 +21,7 @@ public class ExtendSubsystem extends SubsystemBase {
 
 
     public ExtendSubsystem(HardwareMap hardwareMap, Telemetry telemetry) {
-        // initialize hardware here alongside other parameters
+        //initialize hardware here alongside other parameters
         this.telemetry = telemetry;
         //Set Motors
         this.intakeExtensionLeft = new MotorEx(hardwareMap, "intakeExtensionLeft");
