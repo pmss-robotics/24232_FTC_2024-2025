@@ -53,11 +53,11 @@ public class TeleOp extends CommandOpMode {
                 () -> -driver.getRightX(),
                 true);*/
 
-        ExtendSubsystem extendSubsystem = new ExtendSubsystem(hardwareMap, telemetry);
-        extendSubsystem.setDefaultCommand(new RunCommand(
+        //ExtendSubsystem extendSubsystem = new ExtendSubsystem(hardwareMap, telemetry);
+        /*extendSubsystem.setDefaultCommand(new RunCommand(
                 () -> extendSubsystem.setPower(tools.getRightY()),
                 extendSubsystem
-        ));
+        ));*/
         /*
         GenericMotorSubsystem genericMotorSubsystem = new GenericMotorSubsystem(hardwareMap, telemetry, "intakeMotor");
         genericMotorSubsystem.setDefaultCommand(new RunCommand(
