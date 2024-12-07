@@ -19,7 +19,7 @@ public class ExtendSubsystem extends SubsystemBase {
 
 
 
-    /*public ExtendSubsystem(HardwareMap hardwareMap, Telemetry telemetry) {
+    public ExtendSubsystem(HardwareMap hardwareMap, Telemetry telemetry) {
         //initialize hardware here alongside other parameters
         this.telemetry = telemetry;
         //Set Motors
@@ -30,7 +30,7 @@ public class ExtendSubsystem extends SubsystemBase {
         intakeExtensionFront.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
 
 
-    }*/
+    }
     @Override
     public void periodic() {
         //telemetry.addData("Intake Extension Position Thingie Left", intakeExtensionLeft.getCurrentPosition());

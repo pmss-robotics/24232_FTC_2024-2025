@@ -12,6 +12,7 @@ import com.arcrobotics.ftclib.command.button.GamepadButton;
 import com.arcrobotics.ftclib.command.button.Trigger;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.commands.ActionCommand;
@@ -24,6 +25,7 @@ import org.firstinspires.ftc.teamcode.subsystems.ExtendSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.GenericContinuousServoSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.GenericMotorSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.GenericPositionServoSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.IntakeServosSubsystem;
 
 @Config
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOP", group = "TeleOp")
@@ -41,24 +43,33 @@ public class TeleOp extends CommandOpMode {
         GamepadEx driver = new GamepadEx(gamepad1);
         GamepadEx tools = new GamepadEx(gamepad2);
         // The driveSubsystem wraps Roadrunner's MecanumDrive to combine with Commands.
-        // RAHHH DriveSubsystem drive = new DriveSubsystem(new PinpointDrive(hardwareMap, new Pose2d(0, 0, 0)), telemetry);
+        DriveSubsystem drive = new DriveSubsystem(new PinpointDrive(hardwareMap, new Pose2d(0, 0, 0)), telemetry);
         // The driveCommand uses methods defined in the DriveSubsystem to create behaviour.
         // we're passing in methods to get values instead of straight values because it avoids
         // disturbing the structure of the CommandOpMode. The aim is to define bindings in this
         // initialize() method through Commands and these will be looped and acted in the (hidden)
         // run() loop.
-        /*DriveCommand driveCommand = new DriveCommand(drive,
+        DriveCommand driveCommand = new DriveCommand(drive,
                 () -> -driver.getLeftX(),
                 () -> driver.getLeftY(),
                 () -> -driver.getRightX(),
-                true);*/
+                true);
 
-        //ExtendSubsystem extendSubsystem = new ExtendSubsystem(hardwareMap, telemetry);
-        /*extendSubsystem.setDefaultCommand(new RunCommand(
+        ExtendSubsystem extendSubsystem = new ExtendSubsystem(hardwareMap, telemetry);
+        extendSubsystem.setDefaultCommand(new RunCommand(
                 () -> extendSubsystem.setPower(tools.getRightY()),
                 extendSubsystem
-        ));*/
-        /*
+        ));
+
+        IntakeServosSubsystem intakeServosSubsystem = new IntakeServosSubsystem(hardwareMap, telemetry);
+        double intakeServosSubsystemSpeed;
+        if (gamepad1.right_bumper){intakeServosSubsystemSpeed = 0.7;}
+        else { intakeServosSubsystemSpeed = 0.0;}
+        extendSubsystem.setDefaultCommand(new RunCommand(
+                () -> intakeServosSubsystem.setPower(intakeServosSubsystemSpeed),
+                intakeServosSubsystem
+        ));
+
         GenericMotorSubsystem genericMotorSubsystem = new GenericMotorSubsystem(hardwareMap, telemetry, "intakeMotor");
         genericMotorSubsystem.setDefaultCommand(new RunCommand(
                 () -> genericMotorSubsystem.setPower(tools.getRightY()),
@@ -121,7 +132,7 @@ public class TeleOp extends CommandOpMode {
             FtcDashboard.getInstance().sendTelemetryPacket(packet);
         }));
 
-         */
+
         //schedule(driveCommand);
     }
 
