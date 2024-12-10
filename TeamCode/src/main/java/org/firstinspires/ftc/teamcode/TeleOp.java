@@ -25,6 +25,7 @@ import org.firstinspires.ftc.teamcode.subsystems.ExtendSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.GenericContinuousServoSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.GenericMotorSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.GenericPositionServoSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.IntakeMotorSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeServosSubsystem;
 
 @Config
@@ -58,6 +59,19 @@ public class TeleOp extends CommandOpMode {
         ExtendSubsystem extendSubsystem = new ExtendSubsystem(hardwareMap, telemetry);
         extendSubsystem.setDefaultCommand(new RunCommand(
                 () -> extendSubsystem.setPower(tools.getRightY()),
+                extendSubsystem
+        ));
+
+        IntakeMotorSubsystem intakeMotorSubsystem = new IntakeMotorSubsystem(hardwareMap, telemetry, "intakeMotor");
+        double intakeMotorSubsystemOnOff;
+        if (gamepad1.right_bumper){intakeMotorSubsystemOnOff = 0.8;}
+        else { intakeMotorSubsystemOnOff = 0.0;}
+        extendSubsystem.setDefaultCommand(new RunCommand(
+                () -> intakeMotorSubsystem.setPower(intakeMotorSubsystemOnOff),
+                intakeMotorSubsystem
+        ));
+        extendSubsystem.setDefaultCommand(new RunCommand(
+                () -> intakeMotorSubsystem.setPower(intakeMotorSubsystemOnOff),
                 extendSubsystem
         ));
 
