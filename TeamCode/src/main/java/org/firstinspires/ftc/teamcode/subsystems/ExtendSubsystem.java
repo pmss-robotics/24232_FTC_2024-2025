@@ -23,25 +23,24 @@ public class ExtendSubsystem extends SubsystemBase {
         //initialize hardware here alongside other parameters
         this.telemetry = telemetry;
         //Set Motors
-        this.intakeExtensionUp = new MotorEx(hardwareMap, "intakeExtensionUp");
+        ////this.intakeExtensionUp = new MotorEx(hardwareMap, "intakeExtensionUp");
         this.intakeExtensionFront = new MotorEx(hardwareMap, "intakeExtensionFront");
         //When there is nothing for the motors to do
-        intakeExtensionUp.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+        ////intakeExtensionUp.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
         intakeExtensionFront.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
 
 
     }
     @Override
     public void periodic() {
-        //telemetry.addData("Intake Extension Position Thingie Left", intakeExtensionLeft.getCurrentPosition());
-        telemetry.addData("Intake Extension Position Thingie up", intakeExtensionUp.getCurrentPosition());
+        ////telemetry.addData("Intake Extension Position Thingie up", intakeExtensionUp.getCurrentPosition());
         telemetry.addData("Intake Extension Position Thingie front", intakeExtensionFront.getCurrentPosition());
 
 
     }
 
     public void setPower(double power) {
-        intakeExtensionUp.set(power);
+        ////intakeExtensionUp.set(power);
         intakeExtensionFront.set(power);
     }
 
