@@ -50,6 +50,7 @@ public class TeleOp extends CommandOpMode {
         // disturbing the structure of the CommandOpMode. The aim is to define bindings in this
         // initialize() method through Commands and these will be looped and acted in the (hidden)
         // run() loop.
+        //delete this line
         DriveCommand driveCommand = new DriveCommand(drive,
                 () -> -driver.getLeftX(),
                 () -> driver.getLeftY(),
