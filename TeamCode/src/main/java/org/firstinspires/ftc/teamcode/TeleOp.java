@@ -64,16 +64,9 @@ public class TeleOp extends CommandOpMode {
         ));
 
         IntakeMotorSubsystem intakeMotorSubsystem = new IntakeMotorSubsystem(hardwareMap, telemetry, "intakeMotor");
-        double intakeMotorSubsystemOnOff;
-        if (gamepad1.right_bumper){intakeMotorSubsystemOnOff = 0.8;}
-        else { intakeMotorSubsystemOnOff = 0.0;}
         intakeMotorSubsystem.setDefaultCommand(new RunCommand(
-                () -> intakeMotorSubsystem.setPower(intakeMotorSubsystemOnOff),
+                () -> intakeMotorSubsystem.setPower(tools.getLeftX()),
                 intakeMotorSubsystem
-        ));
-        extendSubsystem.setDefaultCommand(new RunCommand(
-                () -> intakeMotorSubsystem.setPower(intakeMotorSubsystemOnOff),
-                extendSubsystem
         ));
 
         IntakeServosSubsystem intakeServosSubsystem = new IntakeServosSubsystem(hardwareMap, telemetry);
@@ -85,7 +78,7 @@ public class TeleOp extends CommandOpMode {
                 intakeServosSubsystem
         ));
 
-        /*GenericMotorSubsystem genericMotorSubsystem = new GenericMotorSubsystem(hardwareMap, telemetry, "intakeMotor");
+        GenericMotorSubsystem genericMotorSubsystem = new GenericMotorSubsystem(hardwareMap, telemetry, "intakeMotor");
         genericMotorSubsystem.setDefaultCommand(new RunCommand(
                 () -> genericMotorSubsystem.setPower(tools.getRightY()),
                 genericMotorSubsystem
@@ -124,7 +117,7 @@ public class TeleOp extends CommandOpMode {
                 new InstantCommand(
                         () -> genericContinuousServoSubsystem.setPower(0.5),
                         genericContinuousServoSubsystem)
-        );*/
+        );
 
 
         // sample for action and command synergy and binding
