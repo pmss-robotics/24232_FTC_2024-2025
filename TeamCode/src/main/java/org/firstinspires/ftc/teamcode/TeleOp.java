@@ -9,24 +9,20 @@ import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.RunCommand;
 import com.arcrobotics.ftclib.command.button.GamepadButton;
-import com.arcrobotics.ftclib.command.button.Trigger;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.commands.ActionCommand;
 import org.firstinspires.ftc.teamcode.commands.DriveCommand;
 import org.firstinspires.ftc.teamcode.drive.Drawing;
-import org.firstinspires.ftc.teamcode.drive.MecanumDrive;
 import org.firstinspires.ftc.teamcode.drive.PinpointDrive;
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
-import org.firstinspires.ftc.teamcode.subsystems.ExtendSubsystem;
-import org.firstinspires.ftc.teamcode.subsystems.GenericContinuousServoSubsystem;
-import org.firstinspires.ftc.teamcode.subsystems.GenericMotorSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.ExtendHorizontalSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.ExtendVerticalSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.GenericPositionServoSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeMotorSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeServosSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.OuttakeServoSubsystem;
 
 @Config
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOP", group = "TeleOp")
@@ -52,31 +48,52 @@ public class TeleOp extends CommandOpMode {
         // run() loop.
         //delete this line
         DriveCommand driveCommand = new DriveCommand(drive,
-                () -> -driver.getLeftX(),
-                () -> driver.getLeftY(),
-                () -> -driver.getRightX(),
+                () -> -driver.getLeftX() * 3.0,
+                () -> driver.getLeftY() * 3.0,
+                () -> -driver.getRightX() * 3.0,
                 true);
 
-        ExtendSubsystem extendSubsystem = new ExtendSubsystem(hardwareMap, telemetry);
-        extendSubsystem.setDefaultCommand(new RunCommand(
-                () -> extendSubsystem.setPower(tools.getRightY()),
-                extendSubsystem
+        ExtendHorizontalSubsystem extendHorizontalSubsystem = new ExtendHorizontalSubsystem(hardwareMap, telemetry, "extendFront");
+        extendHorizontalSubsystem.setDefaultCommand(
+                new RunCommand(
+                () -> extendHorizontalSubsystem.setPower(tools.getRightY() * 0.5),
+                extendHorizontalSubsystem
+        ));
+
+        ExtendVerticalSubsystem extendVerticalSubsystem = new ExtendVerticalSubsystem(hardwareMap, telemetry, "extendUp");
+        double extendVerticalSubsystemSpeed;
+        if (gamepad2.x){extendVerticalSubsystemSpeed = 0.5;}
+        else if (gamepad2.a){extendVerticalSubsystemSpeed = -0.4;}
+        else {extendVerticalSubsystemSpeed = 0.0;}
+        extendVerticalSubsystem.setDefaultCommand(new RunCommand(
+                () -> extendVerticalSubsystem.setPower(extendVerticalSubsystemSpeed),
+                extendVerticalSubsystem
         ));
 
         IntakeMotorSubsystem intakeMotorSubsystem = new IntakeMotorSubsystem(hardwareMap, telemetry, "intakeMotor");
         intakeMotorSubsystem.setDefaultCommand(new RunCommand(
-                () -> intakeMotorSubsystem.setPower(tools.getLeftX() * 0.2),
+                () -> intakeMotorSubsystem.setPower(tools.getLeftX() * 0.3),
                 intakeMotorSubsystem
         ));
 
         IntakeServosSubsystem intakeServosSubsystem = new IntakeServosSubsystem(hardwareMap, telemetry);
         double intakeServosSubsystemSpeed;
-        if (gamepad2.left_bumper){intakeServosSubsystemSpeed = 75.0;}
-        else if (gamepad2.right_bumper){intakeServosSubsystemSpeed = -50.0;}
-        else { intakeServosSubsystemSpeed = 0.0;}
+        if (gamepad2.left_bumper){intakeServosSubsystemSpeed = 0.5;}
+        else if (gamepad2.right_bumper){intakeServosSubsystemSpeed = -0.4;}
+        else {intakeServosSubsystemSpeed = 0.0;}
         intakeServosSubsystem.setDefaultCommand(new RunCommand(
                 () -> intakeServosSubsystem.setPower(intakeServosSubsystemSpeed),
                 intakeServosSubsystem
+        ));
+
+        OuttakeServoSubsystem outtakeServoSubsystem = new OuttakeServoSubsystem(hardwareMap, telemetry, "outtakeServoData");
+        double outtakeServoSubsystemSpeed;
+        if (gamepad2.right_trigger != 0){outtakeServoSubsystemSpeed = 0.5;}
+        else if (gamepad2.left_trigger != 0){outtakeServoSubsystemSpeed = -0.4;}
+        else {outtakeServoSubsystemSpeed = 0.0;}
+        outtakeServoSubsystem.setDefaultCommand(new RunCommand(
+                () -> outtakeServoSubsystem.setPower(outtakeServoSubsystemSpeed),
+                outtakeServoSubsystem
         ));
 
         GenericPositionServoSubsystem genericPositionServoSubsystem1 = new GenericPositionServoSubsystem(hardwareMap, telemetry, "intakeServoLeft", 0.5);

@@ -12,7 +12,8 @@ import java.util.function.DoubleSupplier;
 @Config
 public class IntakeServosSubsystem extends SubsystemBase {
     Telemetry telemetry;
-    Servo servo;
+    Servo intakeServoLeftServo;
+    Servo intakeServoRightServo;
     String intakeServoLeft;
     String intakeServoRight;
 
@@ -20,25 +21,28 @@ public class IntakeServosSubsystem extends SubsystemBase {
         // initialize hardware here alongside other parameters
         this.intakeServoLeft = "intakeServoLeft";
         this.intakeServoRight = "intakeServoRight";
-        //this.servo.setDirection(Servo.Direction.REVERSE);
-        this.servo = hardwareMap.get(Servo.class, intakeServoLeft);
-        this.servo = hardwareMap.get(Servo.class, intakeServoRight);
+        this.intakeServoLeftServo.setDirection(Servo.Direction.REVERSE);
+        this.intakeServoLeftServo = hardwareMap.get(Servo.class, intakeServoLeft);
+        this.intakeServoRightServo = hardwareMap.get(Servo.class, intakeServoRight);
         this.telemetry = telemetry;
     }
     @Override
     public void periodic() {
-        if(!Double.isNaN(servo.getPosition())){
-            telemetry.addData(intakeServoLeft+": " , servo.getPosition());
-            telemetry.addData(intakeServoRight+": " , servo.getPosition());
+        if(!Double.isNaN(intakeServoRightServo.getPosition())){
+            telemetry.addData(intakeServoLeft+": intakeServoLeftData" , intakeServoLeftServo.getPosition());
+            telemetry.addData(intakeServoRight+": intakeServoRightData" , intakeServoRightServo.getPosition());
         }
     }
 
     public void setPower(DoubleSupplier power) {
-        servo.setPosition(power.getAsDouble());
+        intakeServoLeftServo.setPosition(power.getAsDouble());
+        intakeServoRightServo.setPosition(power.getAsDouble());
     }
 
+
     public void setPower(double power) {
-        servo.setPosition(power);
+        intakeServoLeftServo.setPosition(power);
+        intakeServoRightServo.setPosition(power);
     }
 
 }
