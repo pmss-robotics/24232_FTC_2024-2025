@@ -30,7 +30,7 @@ public class ExtendVerticalSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        telemetry.addData(extendUp+": extendnUpData", motor.get());
+        telemetry.addData(extendUp+": extendUpData", motor.get());
     }
 
     public void setPower(DoubleSupplier power) {
