@@ -4,6 +4,8 @@ import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -16,7 +18,7 @@ public class ExtendVerticalSubsystem extends SubsystemBase {
 
     // declare hardware here
     Telemetry telemetry;
-    static MotorEx motor;
+    public DcMotorEx motor;
     String extendUp;
 
 
@@ -24,19 +26,18 @@ public class ExtendVerticalSubsystem extends SubsystemBase {
         // initialize hardware here alongside other parameters
         this.telemetry = telemetry;
         this.extendUp = motorName;
-        this.motor = new MotorEx(hardwareMap, extendUp);
-        motor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+        this.motor = hardwareMap.get(DcMotorEx.class,  motorName);
+        motor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     @Override
     public void periodic() {
-        telemetry.addData(extendUp+": extendUpData", motor.get());
+        telemetry.addData(extendUp+": extendUpData", motor.getCurrentPosition());
     }
 
-    public void setPower(DoubleSupplier power) {
-        motor.set(power.getAsDouble());
-    }
-    public static void setPower(double power) {
-        motor.set(power);
+    public void setPower(double power) {
+        motor.setPower(power);
     }
 }

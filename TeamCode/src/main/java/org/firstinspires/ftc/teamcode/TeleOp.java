@@ -27,8 +27,11 @@ import org.firstinspires.ftc.teamcode.subsystems.OuttakeServoSubsystem;
 @Config
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOP", group = "TeleOp")
 public class TeleOp extends CommandOpMode {
-    public static double servoIncrement = 0.002;
-    public static double servoSpeed = 0.5;
+
+    public static int maxVertical = -2900;
+    public static int minVertical = 2;
+
+
     @Override
     public void initialize() {
         // data sent to telemetry shows up on dashboard and driverGamepad station
@@ -48,15 +51,15 @@ public class TeleOp extends CommandOpMode {
         // run() loop.
         //delete this line
         DriveCommand driveCommand = new DriveCommand(drive,
-                () -> -driver.getLeftX() * 3.0,
-                () -> driver.getLeftY() * 3.0,
-                () -> -driver.getRightX() * 3.0,
+                () -> -driver.getLeftX(),
+                () -> driver.getLeftY(),
+                () -> -driver.getRightX(),
                 true);
 
         ExtendHorizontalSubsystem extendHorizontalSubsystem = new ExtendHorizontalSubsystem(hardwareMap, telemetry, "extendFront");
         extendHorizontalSubsystem.setDefaultCommand(
                 new RunCommand(
-                () -> extendHorizontalSubsystem.setPower(tools.getRightY() * 0.5),
+                () -> extendHorizontalSubsystem.setPower(tools.getRightY() * 1.1),
                 extendHorizontalSubsystem
         ));
 
@@ -64,8 +67,15 @@ public class TeleOp extends CommandOpMode {
         extendVerticalSubsystem.setDefaultCommand(new RunCommand(
                 () -> {
                     double extendVerticalSubsystemSpeed;
-                    if (tools.gamepad.x){extendVerticalSubsystemSpeed = 0.8;}
-                    else if (tools.gamepad.a){extendVerticalSubsystemSpeed = -0.4;}
+                    double position = extendVerticalSubsystem.motor.getCurrentPosition();
+                    if (tools.gamepad.x) {
+                        extendVerticalSubsystemSpeed = 1.0;
+                        if(position < maxVertical) {extendVerticalSubsystemSpeed = 0;}
+                    }
+                    else if (tools.gamepad.a){
+                        extendVerticalSubsystemSpeed = -0.6;
+                        if(position > minVertical) {extendVerticalSubsystemSpeed = 0;}
+                    }
                     else {extendVerticalSubsystemSpeed = 0.0;}
                     extendVerticalSubsystem.setPower(extendVerticalSubsystemSpeed);
                 },
@@ -74,7 +84,7 @@ public class TeleOp extends CommandOpMode {
 
         IntakeMotorSubsystem intakeMotorSubsystem = new IntakeMotorSubsystem(hardwareMap, telemetry, "intakeMotor");
         intakeMotorSubsystem.setDefaultCommand(new RunCommand(
-                () -> intakeMotorSubsystem.setPower(tools.getLeftX() * 0.3),
+                () -> intakeMotorSubsystem.setPower(tools.getLeftX()),
                 intakeMotorSubsystem
         ));
 
@@ -83,7 +93,7 @@ public class TeleOp extends CommandOpMode {
                 () ->{
                     double intakeServosSubsystemSpeed;
                     if (tools.getButton(GamepadKeys.Button.LEFT_BUMPER)){intakeServosSubsystemSpeed = 0.8;}
-                    else if (tools.getButton(GamepadKeys.Button.RIGHT_BUMPER)){intakeServosSubsystemSpeed = 0.2;}
+                    else if (tools.getButton(GamepadKeys.Button.RIGHT_BUMPER)){intakeServosSubsystemSpeed = 0.1;}
                     else {intakeServosSubsystemSpeed = 0.5;}
                     intakeServosSubsystem.setPower(intakeServosSubsystemSpeed);
                 },
@@ -94,10 +104,10 @@ public class TeleOp extends CommandOpMode {
         outtakeServoSubsystem.setDefaultCommand(new RunCommand(
                 () -> {
                     double outtakeServoSubsystemSpeed;
-                    if (gamepad2.right_trigger != 0){outtakeServoSubsystemSpeed = 0.5;}
-                    else if (gamepad2.left_trigger != 0){outtakeServoSubsystemSpeed = -0.4;}
+                    if (gamepad2.right_trigger != 0){outtakeServoSubsystemSpeed = 0.6;}
+                    else if (gamepad2.left_trigger != 0){outtakeServoSubsystemSpeed = -0.5;}
                     else {outtakeServoSubsystemSpeed = 0.0;}
-                    outtakeServoSubsystem.setPower(outtakeServoSubsystemSpeed);
+                    outtakeServoSubsystem.setPower(outtakeServoSubsystemSpeed * 3.0);
                 },
                 outtakeServoSubsystem
         ));
