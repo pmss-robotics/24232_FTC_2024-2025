@@ -17,20 +17,20 @@ public class ExtendVerticalSubsystem extends SubsystemBase {
     // declare hardware here
     Telemetry telemetry;
     static MotorEx motor;
-    String extensionUp;
+    String extendUp;
 
 
     public ExtendVerticalSubsystem(HardwareMap hardwareMap, Telemetry telemetry, String motorName) {
         // initialize hardware here alongside other parameters
         this.telemetry = telemetry;
-        this.extensionUp = motorName;
-        this.motor = new MotorEx(hardwareMap, extensionUp);
+        this.extendUp = motorName;
+        this.motor = new MotorEx(hardwareMap, extendUp);
         motor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
     }
 
     @Override
     public void periodic() {
-        telemetry.addData(extensionUp+": extensionUpData", motor.get());
+        telemetry.addData(extendUp+": extendnUpData", motor.get());
     }
 
     public void setPower(DoubleSupplier power) {

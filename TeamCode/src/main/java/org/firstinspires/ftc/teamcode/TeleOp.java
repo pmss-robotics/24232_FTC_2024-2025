@@ -61,12 +61,14 @@ public class TeleOp extends CommandOpMode {
         ));
 
         ExtendVerticalSubsystem extendVerticalSubsystem = new ExtendVerticalSubsystem(hardwareMap, telemetry, "extendUp");
-        double extendVerticalSubsystemSpeed;
-        if (gamepad2.x){extendVerticalSubsystemSpeed = 0.5;}
-        else if (gamepad2.a){extendVerticalSubsystemSpeed = -0.4;}
-        else {extendVerticalSubsystemSpeed = 0.0;}
         extendVerticalSubsystem.setDefaultCommand(new RunCommand(
-                () -> extendVerticalSubsystem.setPower(extendVerticalSubsystemSpeed),
+                () -> {
+                    double extendVerticalSubsystemSpeed;
+                    if (tools.gamepad.x){extendVerticalSubsystemSpeed = 0.8;}
+                    else if (tools.gamepad.a){extendVerticalSubsystemSpeed = -0.4;}
+                    else {extendVerticalSubsystemSpeed = 0.0;}
+                    extendVerticalSubsystem.setPower(extendVerticalSubsystemSpeed);
+                },
                 extendVerticalSubsystem
         ));
 
@@ -77,45 +79,30 @@ public class TeleOp extends CommandOpMode {
         ));
 
         IntakeServosSubsystem intakeServosSubsystem = new IntakeServosSubsystem(hardwareMap, telemetry);
-        double intakeServosSubsystemSpeed;
-        if (gamepad2.left_bumper){intakeServosSubsystemSpeed = 0.5;}
-        else if (gamepad2.right_bumper){intakeServosSubsystemSpeed = -0.4;}
-        else {intakeServosSubsystemSpeed = 0.0;}
         intakeServosSubsystem.setDefaultCommand(new RunCommand(
-                () -> intakeServosSubsystem.setPower(intakeServosSubsystemSpeed),
+                () ->{
+                    double intakeServosSubsystemSpeed;
+                    if (tools.getButton(GamepadKeys.Button.LEFT_BUMPER)){intakeServosSubsystemSpeed = 0.8;}
+                    else if (tools.getButton(GamepadKeys.Button.RIGHT_BUMPER)){intakeServosSubsystemSpeed = 0.2;}
+                    else {intakeServosSubsystemSpeed = 0.5;}
+                    intakeServosSubsystem.setPower(intakeServosSubsystemSpeed);
+                },
                 intakeServosSubsystem
         ));
 
-        OuttakeServoSubsystem outtakeServoSubsystem = new OuttakeServoSubsystem(hardwareMap, telemetry, "outtakeServoData");
-        double outtakeServoSubsystemSpeed;
-        if (gamepad2.right_trigger != 0){outtakeServoSubsystemSpeed = 0.5;}
-        else if (gamepad2.left_trigger != 0){outtakeServoSubsystemSpeed = -0.4;}
-        else {outtakeServoSubsystemSpeed = 0.0;}
+        OuttakeServoSubsystem outtakeServoSubsystem = new OuttakeServoSubsystem(hardwareMap, telemetry, "outtakeServo");
         outtakeServoSubsystem.setDefaultCommand(new RunCommand(
-                () -> outtakeServoSubsystem.setPower(outtakeServoSubsystemSpeed),
+                () -> {
+                    double outtakeServoSubsystemSpeed;
+                    if (gamepad2.right_trigger != 0){outtakeServoSubsystemSpeed = 0.5;}
+                    else if (gamepad2.left_trigger != 0){outtakeServoSubsystemSpeed = -0.4;}
+                    else {outtakeServoSubsystemSpeed = 0.0;}
+                    outtakeServoSubsystem.setPower(outtakeServoSubsystemSpeed);
+                },
                 outtakeServoSubsystem
         ));
 
-        GenericPositionServoSubsystem genericPositionServoSubsystem1 = new GenericPositionServoSubsystem(hardwareMap, telemetry, "intakeServoLeft", 0.5);
-        GenericPositionServoSubsystem genericPositionServoSubsystem2 = new GenericPositionServoSubsystem(hardwareMap, telemetry, "intakeServoRight", 0.5);
-        genericPositionServoSubsystem1.setDefaultCommand(new RunCommand(
-                () -> genericPositionServoSubsystem1.setPosition(genericPositionServoSubsystem1.position),
-                genericPositionServoSubsystem1
-        ));
-        genericPositionServoSubsystem2.setDefaultCommand(new RunCommand(
-                () -> genericPositionServoSubsystem2.setPosition(genericPositionServoSubsystem2.position),
-                genericPositionServoSubsystem2
-        ));
-        new GamepadButton(tools, GamepadKeys.Button.LEFT_BUMPER)
-                .whileHeld(new InstantCommand(
-                        () -> genericPositionServoSubsystem1.incrementPosition(-servoIncrement),
-                        genericPositionServoSubsystem1
-                ));
-        new GamepadButton(tools, GamepadKeys.Button.RIGHT_BUMPER)
-                .whileHeld(new InstantCommand(
-                        () -> genericPositionServoSubsystem2.incrementPosition(-servoIncrement),
-                        genericPositionServoSubsystem2
-                ));
+
 
         /*GenericContinuousServoSubsystem genericContinuousServoSubsystem = new GenericContinuousServoSubsystem(hardwareMap, telemetry, "servo");
         // to trigger you can do something similar to whats done in genericMotorSubsystem or...

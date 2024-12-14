@@ -17,20 +17,20 @@ public class ExtendHorizontalSubsystem extends SubsystemBase {
     // declare hardware here
     Telemetry telemetry;
     MotorEx motor;
-    String extensionFront;
+    String extendFront;
 
 
     public ExtendHorizontalSubsystem(HardwareMap hardwareMap, Telemetry telemetry, String motorName) {
         // initialize hardware here alongside other parameters
         this.telemetry = telemetry;
-        this.extensionFront = motorName;
-        this.motor = new MotorEx(hardwareMap, extensionFront);
+        this.extendFront = motorName;
+        this.motor = new MotorEx(hardwareMap, extendFront);
         motor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
     }
 
     @Override
     public void periodic() {
-        telemetry.addData(extensionFront+": extensionFrontData", motor.get());
+        telemetry.addData(extendFront+": extendFrontData", motor.get());
     }
 
     public void setPower(DoubleSupplier power) {

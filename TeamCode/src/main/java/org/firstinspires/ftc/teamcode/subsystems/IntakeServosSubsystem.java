@@ -21,9 +21,9 @@ public class IntakeServosSubsystem extends SubsystemBase {
         // initialize hardware here alongside other parameters
         this.intakeServoLeft = "intakeServoLeft";
         this.intakeServoRight = "intakeServoRight";
-        this.intakeServoLeftServo.setDirection(Servo.Direction.REVERSE);
         this.intakeServoLeftServo = hardwareMap.get(Servo.class, intakeServoLeft);
         this.intakeServoRightServo = hardwareMap.get(Servo.class, intakeServoRight);
+        this.intakeServoLeftServo.setDirection(Servo.Direction.REVERSE);
         this.telemetry = telemetry;
     }
     @Override
