@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -21,10 +22,15 @@ public class DoubleJointArmTeleOp extends OpMode {
         DcMotorEx joint1Motor1 = hardwareMap.get(DcMotorEx.class, "joint1Motor1");
         DcMotorEx joint1Motor2 = hardwareMap.get(DcMotorEx.class, "joint1Motor2");
         DcMotorEx joint2Motor = hardwareMap.get(DcMotorEx.class, "joint2Motor");
-        arm = new DoubleJointArm(joint1Motor1, joint1Motor2, joint2Motor, telemetry);
-        telemetry.addData("Encoder Ticks", joint1Motor1.getCurrentPosition());
-        telemetry.addData("Joint Angle (rads)", arm.getJointAngle(joint1Motor1));
 
+        joint1Motor1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        joint1Motor1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        joint1Motor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        joint1Motor2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        joint2Motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        joint2Motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        arm = new DoubleJointArm(joint1Motor1, joint1Motor2, joint2Motor, telemetry);
         rollerIntake = new RollerIntakeSubsystem(hardwareMap, telemetry);
     }
 
@@ -32,34 +38,24 @@ public class DoubleJointArmTeleOp extends OpMode {
     public void loop() {
         GamepadEx tools = new GamepadEx(gamepad2);
 
-        // Arm
-        // Change !!!
-        int scaleRange = 180;
-
+        double scaleRange = 180;
         double targetX = tools.getLeftX() * scaleRange;
         double targetY = tools.getLeftY() * scaleRange;
+
         arm.controlArm(targetX, targetY);
 
-        double joint1M1Power = arm.getJoint1Motor1Power();
-        double joint1M2Power = arm.getJoint1Motor2Power();
-        double joint2Power = arm.getJoint2MotorPower();
-        telemetry.addData("Joint 1 M1 Power", joint1M1Power);
-        telemetry.addData("Joint 1 M2 Power", joint1M2Power);
-        telemetry.addData("Joint 2 Power", joint2Power);
-
-        // Intake
         if (tools.gamepad.a) {
-            rollerIntake.startIntake(); // Start intake
+            rollerIntake.startIntake();
         } else if (tools.gamepad.b) {
-            rollerIntake.startOuttake(); // Start outtake
+            rollerIntake.startOuttake();
         } else if (tools.gamepad.x) {
-            rollerIntake.stop(); // Stop rollers
+            rollerIntake.stop();
         }
 
-        telemetry.addData("Target X", "%.2f", targetX);
-        telemetry.addData("Target Y", "%.2f", targetY);
-        telemetry.addData("Joint 1 Angle", "%.2f", arm.getJoint1Angle());
-        telemetry.addData("Joint 2 Angle", "%.2f", arm.getJoint2Angle());
+        telemetry.addData("Target X", targetX);
+        telemetry.addData("Target Y", targetY);
+        telemetry.addData("Joint 1 Angle", arm.getJoint1Angle());
+        telemetry.addData("Joint 2 Angle", arm.getJoint2Angle());
         telemetry.update();
     }
 }
