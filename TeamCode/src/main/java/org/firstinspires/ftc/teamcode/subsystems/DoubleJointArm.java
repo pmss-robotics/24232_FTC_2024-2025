@@ -79,7 +79,8 @@ public class DoubleJointArm {
     }
 
     private double applyPowerThreshold(double power) {
-        return Math.abs(power) < 0.1 ? 0.0 : power;
+        //return Math.abs(power) < 0.05 ? 0.0 : power;
+        return power;
     }
 
     private double pidControl(DcMotorEx motor, double targetAngle, int jointNum) {
