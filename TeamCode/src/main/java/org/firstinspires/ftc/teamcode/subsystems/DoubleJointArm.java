@@ -108,7 +108,7 @@ public class DoubleJointArm {
         telemetry.update();
 
         double power = proportional + integral + derivative;
-        return Math.max(-1.0, Math.min(1.0, power)); // Power Clamped
+        return Math.max(-1.0, Math.min(1.0, power)); // Power Clamped //
     }
 
     private double[] inverseKinematics(double x, double y) { // angles from target pos
