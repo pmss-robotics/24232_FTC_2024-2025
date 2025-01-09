@@ -25,8 +25,10 @@ public class DoubleJointArmTeleOp extends OpMode {
 
         joint1Motor1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         joint1Motor1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         joint1Motor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         joint1Motor2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         joint2Motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         joint2Motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
@@ -39,10 +41,9 @@ public class DoubleJointArmTeleOp extends OpMode {
         GamepadEx tools = new GamepadEx(gamepad2);
 
         double scaleRange = 180;
-        double targetX = tools.getLeftX() * scaleRange;
         double targetY = tools.getLeftY() * scaleRange;
 
-        arm.controlArm(targetX, targetY);
+        arm.controlArm(targetY);
 
         if (tools.gamepad.a) {
             rollerIntake.startIntake();
@@ -52,7 +53,7 @@ public class DoubleJointArmTeleOp extends OpMode {
             rollerIntake.stop();
         }
 
-        telemetry.addData("Target X", targetX);
+        //telemetry.addData("Target X", targetX);
         telemetry.addData("Target Y", targetY);
         telemetry.addData("Joint 1 Angle", arm.getJoint1Angle());
         telemetry.addData("Joint 2 Angle", arm.getJoint2Angle());

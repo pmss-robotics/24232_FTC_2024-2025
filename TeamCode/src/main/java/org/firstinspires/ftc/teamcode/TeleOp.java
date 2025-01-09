@@ -56,7 +56,7 @@ public class TeleOp extends CommandOpMode {
                 () -> -driver.getRightX(),
                 true);
 
-        ExtendHorizontalSubsystem extendHorizontalSubsystem = new ExtendHorizontalSubsystem(hardwareMap, telemetry, "extendFront");
+        /*ExtendHorizontalSubsystem extendHorizontalSubsystem = new ExtendHorizontalSubsystem(hardwareMap, telemetry, "extendFront");
         extendHorizontalSubsystem.setDefaultCommand(
                 new RunCommand(
                 () -> extendHorizontalSubsystem.setPower(tools.getRightY() * 1.1),
@@ -86,7 +86,7 @@ public class TeleOp extends CommandOpMode {
         intakeMotorSubsystem.setDefaultCommand(new RunCommand(
                 () -> intakeMotorSubsystem.setPower(tools.getLeftX()),
                 intakeMotorSubsystem
-        ));
+        ));*/
 
         IntakeServosSubsystem intakeServosSubsystem = new IntakeServosSubsystem(hardwareMap, telemetry);
         intakeServosSubsystem.setDefaultCommand(new RunCommand(
@@ -99,7 +99,7 @@ public class TeleOp extends CommandOpMode {
                 },
                 intakeServosSubsystem
         ));
-
+        /*
         OuttakeServoSubsystem outtakeServoSubsystem = new OuttakeServoSubsystem(hardwareMap, telemetry, "outtakeServo");
         outtakeServoSubsystem.setDefaultCommand(new RunCommand(
                 () -> {
@@ -110,7 +110,7 @@ public class TeleOp extends CommandOpMode {
                     outtakeServoSubsystem.setPower(outtakeServoSubsystemSpeed * 3.0);
                 },
                 outtakeServoSubsystem
-        ));
+        ));*/
 
 
 

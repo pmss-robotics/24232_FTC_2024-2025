@@ -20,13 +20,11 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 public class DoubleJointArm {
 
     private DcMotorEx joint1Motor1, joint1Motor2, joint2Motor;
-
-    // Telemetry
     private Telemetry telemetry;
 
     // Constants
-    private static final int ticksPerRev = 1680;
-    private static final double ENCODER_TICKS_TO_RADIANS = 2 * Math.PI / ticksPerRev;
+    private static final int TICKS_PER_REVOLUTION = 1680;
+    private static final double ENCODER_TICKS_TO_RADIANS = 2 * Math.PI / TICKS_PER_REVOLUTION;
 
     // Arm dimensions
     private static final double L1 = 33.5; // Length of first arm
@@ -67,8 +65,12 @@ public class DoubleJointArm {
         joint2Motor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
     }
 
-    public void controlArm(double targetX, double targetY) {
-        double[] targetAngles = inverseKinematics(targetX, targetY);
+    public void controlArm(double targetY) {
+        double[] targetAngles = calculateAngles(targetY);
+
+        // Debug target angles
+        telemetry.addData("Target Angle 1", targetAngles[0]);
+        telemetry.addData("Target Angle 2", targetAngles[1]);
 
         double joint1Power = pidControl(joint1Motor1, targetAngles[0], 1);
         double joint2Power = pidControl(joint2Motor, targetAngles[1], 2);
@@ -76,6 +78,20 @@ public class DoubleJointArm {
         joint1Motor1.setPower(applyPowerThreshold(joint1Power));
         joint1Motor2.setPower(applyPowerThreshold(joint1Power));
         joint2Motor.setPower(applyPowerThreshold(joint2Power));
+
+        telemetry.addData("Joint 1 Power", joint1Power);
+        telemetry.addData("Joint 2 Power", joint2Power);
+
+        /*telemetry.addData("Target X", targetX);
+        telemetry.addData("Target Y", targetY);
+
+        joint1Motor1.setPower(0.5);
+        joint1Motor2.setPower(0.5);
+        joint2Motor.setPower(0.5);
+
+        telemetry.addData("Joint 1 Motor 1 Power", joint1Motor1.getPower());
+        telemetry.addData("Joint 2 Motor Power", joint1Motor1.getPower());
+    */
     }
 
     private double applyPowerThreshold(double power) {
@@ -114,16 +130,26 @@ public class DoubleJointArm {
         }
 
         // Debugging telemetry
-        telemetry.addData("Joint " + jointNum + " Error", error);
-        telemetry.addData("Joint " + jointNum + " Proportional", proportional);
-        telemetry.addData("Joint " + jointNum + " Integral", integral);
-        telemetry.addData("Joint " + jointNum + " Derivative", derivative);
+        //telemetry.addData("Joint " + jointNum + " Error", error);
+        //telemetry.addData("Joint " + jointNum + " Proportional", proportional);
+        //telemetry.addData("Joint " + jointNum + " Integral", integral);
+        //telemetry.addData("Joint " + jointNum + " Derivative", derivative);
 
         double power = proportional + integral + derivative;
         return Math.max(-1.0, Math.min(1.0, power));
     }
 
+    private double[] calculateAngles(double y) {
+        double r = Math.min( Math.max(y, Math.abs(L1-L2)) , L1+L2);
+
+        double theta1 = Math.acos( (L1*L1 + r*r - L2*L2)/(2*L1*r) ); //Base joint angle
+        double theta2 = Math.PI - Math.acos( (L1*L1 + L2*L2 - r*r)/(2*L1*L2) ); //Elbow joint angle
+
+        return new double[]{theta1, theta2};
+    }
+    /*
     private double[] inverseKinematics(double x, double y) {
+
         double r = Math.sqrt(x * x + y * y);
         r = Math.min(r, L1 + L2);
         r = Math.max(r, Math.abs(L1 - L2));
@@ -136,9 +162,10 @@ public class DoubleJointArm {
         double theta2 = Math.PI - gamma;
 
         return new double[]{Math.max(-Math.PI, Math.min(Math.PI, theta1)), Math.max(-Math.PI, Math.min(Math.PI, theta2))};
-    }
+    }*/
 
     public double getJointAngle(DcMotorEx motor) {
+        telemetry.addData("Motor Encoder Ticks", motor.getCurrentPosition());
         return motor.getCurrentPosition() * ENCODER_TICKS_TO_RADIANS;
     }
 
