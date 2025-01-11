@@ -6,9 +6,7 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.arcrobotics.ftclib.command.CommandOpMode;
-import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.RunCommand;
-import com.arcrobotics.ftclib.command.button.GamepadButton;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 
@@ -17,12 +15,11 @@ import org.firstinspires.ftc.teamcode.commands.DriveCommand;
 import org.firstinspires.ftc.teamcode.drive.Drawing;
 import org.firstinspires.ftc.teamcode.drive.PinpointDrive;
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
-import org.firstinspires.ftc.teamcode.subsystems.ExtendHorizontalSubsystem;
-import org.firstinspires.ftc.teamcode.subsystems.ExtendVerticalSubsystem;
-import org.firstinspires.ftc.teamcode.subsystems.GenericPositionServoSubsystem;
-import org.firstinspires.ftc.teamcode.subsystems.IntakeMotorSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeServosSubsystem;
-import org.firstinspires.ftc.teamcode.subsystems.OuttakeServoSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.NewArmElbowSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.NewArmShoulderSubsystem;
+
+import java.util.concurrent.atomic.AtomicReference;
 
 @Config
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOP", group = "TeleOp")
@@ -44,49 +41,45 @@ public class TeleOp extends CommandOpMode {
         GamepadEx tools = new GamepadEx(gamepad2);
         // The driveSubsystem wraps Roadrunner's MecanumDrive to combine with Commands.
         DriveSubsystem drive = new DriveSubsystem(new PinpointDrive(hardwareMap, new Pose2d(0, 0, 0)), telemetry);
-        // The driveCommand uses methods defined in the DriveSubsystem to create behaviour.
-        // we're passing in methods to get values instead of straight values because it avoids
-        // disturbing the structure of the CommandOpMode. The aim is to define bindings in this
-        // initialize() method through Commands and these will be looped and acted in the (hidden)
-        // run() loop.
-        //delete this line
         DriveCommand driveCommand = new DriveCommand(drive,
                 () -> -driver.getLeftX(),
                 () -> driver.getLeftY(),
                 () -> -driver.getRightX(),
                 true);
 
-        /*ExtendHorizontalSubsystem extendHorizontalSubsystem = new ExtendHorizontalSubsystem(hardwareMap, telemetry, "extendFront");
-        extendHorizontalSubsystem.setDefaultCommand(
-                new RunCommand(
-                () -> extendHorizontalSubsystem.setPower(tools.getRightY() * 1.1),
-                extendHorizontalSubsystem
-        ));
-
-        ExtendVerticalSubsystem extendVerticalSubsystem = new ExtendVerticalSubsystem(hardwareMap, telemetry, "extendUp");
-        extendVerticalSubsystem.setDefaultCommand(new RunCommand(
-                () -> {
-                    double extendVerticalSubsystemSpeed;
-                    double position = extendVerticalSubsystem.motor.getCurrentPosition();
+        /*double newArmShoulderSubsystemSpeed = 0.0;
+        NewArmShoulderSubsystem newArmShoulderSubsystem = new NewArmShoulderSubsystem(hardwareMap, telemetry, "shoulderMotorLeft", "shoulderMotorRight");
+        newArmShoulderSubsystem.setDefaultCommand(
+                () ->{
+                    //! double position = newArmShoulderSubsystem.shoulderMotorLeft.getCurrentPosition();
                     if (tools.gamepad.x) {
-                        extendVerticalSubsystemSpeed = 1.0;
-                        if(position < maxVertical) {extendVerticalSubsystemSpeed = 0;}
-                    }
-                    else if (tools.gamepad.a){
-                        extendVerticalSubsystemSpeed = -0.6;
-                        if(position > minVertical) {extendVerticalSubsystemSpeed = 0;}
-                    }
-                    else {extendVerticalSubsystemSpeed = 0.0;}
-                    extendVerticalSubsystem.setPower(extendVerticalSubsystemSpeed);
+                        newArmShoulderSubsystemSpeed = 1.0;
+                        //! if(position < maxVertical) {newArmShoulderSubsystemSpeed = 0;}
+                    }else if (tools.gamepad.a){
+                        newArmShoulderSubsystemSpeed = -0.6;
+                        //! if(position > minVertical) {newArmShoulderSubsystemSpeed = 0;}
+                    }else {newArmShoulderSubsystemSpeed = 0.0;}
+                    newArmShoulderSubsystem.setPower(newArmShoulderSubsystemSpeed);
                 },
-                extendVerticalSubsystem
-        ));
+                newArmShoulderSubsystem
+        );
 
-        IntakeMotorSubsystem intakeMotorSubsystem = new IntakeMotorSubsystem(hardwareMap, telemetry, "intakeMotor");
-        intakeMotorSubsystem.setDefaultCommand(new RunCommand(
-                () -> intakeMotorSubsystem.setPower(tools.getLeftX()),
-                intakeMotorSubsystem
-        ));*/
+        NewArmElbowSubsystem newArmElbowSubsystem = new NewArmElbowSubsystem(hardwareMap, telemetry, "elbowMotor");
+        newArmElbowSubsystem.setDefaultCommand(
+                () ->{
+                    double newArmElbowSubsystemSpeed = 0.0;
+                    //! double position = newArmShoulderSubsystem.shoulderMotorLeft.getCurrentPosition();
+                    if (tools.gamepad.y) {
+                        newArmElbowSubsystemSpeed = 1.0;
+                        //! if(position < maxVertical) {newArmShoulderSubsystemSpeed = 0;}
+                    }else if (tools.gamepad.b){
+                        newArmElbowSubsystemSpeed = -0.6;
+                        //! if(position > minVertical) {newArmShoulderSubsystemSpeed = 0;}
+                    }else {newArmElbowSubsystemSpeed = 0.0;}
+                    NewArmElbowSubsystem.setPower(newArmElbowSubsystemSpeed);
+                },
+                newArmElbowSubsystem
+        );*/
 
         IntakeServosSubsystem intakeServosSubsystem = new IntakeServosSubsystem(hardwareMap, telemetry);
         intakeServosSubsystem.setDefaultCommand(new RunCommand(
