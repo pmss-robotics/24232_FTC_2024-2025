@@ -15,7 +15,7 @@ import org.firstinspires.ftc.teamcode.subsystems.RollerIntakeSubsystem;
 public class DoubleJointArmTeleOp extends OpMode {
 
     private DoubleJointArm arm;
-    private RollerIntakeSubsystem rollerIntake;
+    //private RollerIntakeSubsystem rollerIntake;
 
     @Override
     public void init() {
@@ -33,7 +33,7 @@ public class DoubleJointArmTeleOp extends OpMode {
         joint2Motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         arm = new DoubleJointArm(joint1Motor1, joint1Motor2, joint2Motor, telemetry);
-        rollerIntake = new RollerIntakeSubsystem(hardwareMap, telemetry);
+        //rollerIntake = new RollerIntakeSubsystem(hardwareMap, telemetry);
     }
 
     @Override
@@ -45,13 +45,13 @@ public class DoubleJointArmTeleOp extends OpMode {
 
         arm.controlArm(targetY);
 
-        if (tools.gamepad.a) {
-            rollerIntake.startIntake();
-        } else if (tools.gamepad.b) {
-            rollerIntake.startOuttake();
-        } else if (tools.gamepad.x) {
-            rollerIntake.stop();
-        }
+//        if (tools.gamepad.a) {
+//            rollerIntake.startIntake();
+//        } else if (tools.gamepad.b) {
+//            rollerIntake.startOuttake();
+//        } else if (tools.gamepad.x) {
+//            rollerIntake.stop();
+//        }
 
         //telemetry.addData("Target X", targetX);
         telemetry.addData("Target Y", targetY);

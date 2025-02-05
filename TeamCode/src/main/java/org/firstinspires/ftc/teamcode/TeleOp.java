@@ -47,41 +47,7 @@ public class TeleOp extends CommandOpMode {
                 () -> -driver.getRightX(),
                 true);
 
-        /*double newArmShoulderSubsystemSpeed = 0.0;
-        NewArmShoulderSubsystem newArmShoulderSubsystem = new NewArmShoulderSubsystem(hardwareMap, telemetry, "shoulderMotorLeft", "shoulderMotorRight");
-        newArmShoulderSubsystem.setDefaultCommand(
-                () ->{
-                    //! double position = newArmShoulderSubsystem.shoulderMotorLeft.getCurrentPosition();
-                    if (tools.gamepad.x) {
-                        newArmShoulderSubsystemSpeed = 1.0;
-                        //! if(position < maxVertical) {newArmShoulderSubsystemSpeed = 0;}
-                    }else if (tools.gamepad.a){
-                        newArmShoulderSubsystemSpeed = -0.6;
-                        //! if(position > minVertical) {newArmShoulderSubsystemSpeed = 0;}
-                    }else {newArmShoulderSubsystemSpeed = 0.0;}
-                    newArmShoulderSubsystem.setPower(newArmShoulderSubsystemSpeed);
-                },
-                newArmShoulderSubsystem
-        );
-
-        NewArmElbowSubsystem newArmElbowSubsystem = new NewArmElbowSubsystem(hardwareMap, telemetry, "elbowMotor");
-        newArmElbowSubsystem.setDefaultCommand(
-                () ->{
-                    double newArmElbowSubsystemSpeed = 0.0;
-                    //! double position = newArmShoulderSubsystem.shoulderMotorLeft.getCurrentPosition();
-                    if (tools.gamepad.y) {
-                        newArmElbowSubsystemSpeed = 1.0;
-                        //! if(position < maxVertical) {newArmShoulderSubsystemSpeed = 0;}
-                    }else if (tools.gamepad.b){
-                        newArmElbowSubsystemSpeed = -0.6;
-                        //! if(position > minVertical) {newArmShoulderSubsystemSpeed = 0;}
-                    }else {newArmElbowSubsystemSpeed = 0.0;}
-                    NewArmElbowSubsystem.setPower(newArmElbowSubsystemSpeed);
-                },
-                newArmElbowSubsystem
-        );*/
-
-        IntakeServosSubsystem intakeServosSubsystem = new IntakeServosSubsystem(hardwareMap, telemetry);
+        /*IntakeServosSubsystem intakeServosSubsystem = new IntakeServosSubsystem(hardwareMap, telemetry);
         intakeServosSubsystem.setDefaultCommand(new RunCommand(
                 () ->{
                     double intakeServosSubsystemSpeed;
