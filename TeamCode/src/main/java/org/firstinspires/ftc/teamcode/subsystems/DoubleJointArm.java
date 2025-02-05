@@ -17,7 +17,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 // tuning guide: https://docs.wpilib.org/en/stable/docs/software/advanced-controls/introduction/introduction-to-feedforward.html#introduction-to-dc-motor-feedforward
 @Config
-public class DoubleJointArm {
+public class DoubleJointArm extends SubsystemBase{
 
     private DcMotorEx joint1Motor1, joint1Motor2, joint2Motor;
     private Telemetry telemetry;

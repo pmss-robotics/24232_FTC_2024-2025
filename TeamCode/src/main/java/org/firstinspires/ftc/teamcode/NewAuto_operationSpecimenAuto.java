@@ -6,46 +6,60 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.CommandOpMode;
+import com.arcrobotics.ftclib.command.InstantCommand;
+import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.RunCommand;
+import com.arcrobotics.ftclib.command.SequentialCommandGroup;
+import com.arcrobotics.ftclib.command.WaitCommand;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.commands.ActionCommand;
 import org.firstinspires.ftc.teamcode.drive.Drawing;
-import org.firstinspires.ftc.teamcode.drive.MecanumDrive;
 import org.firstinspires.ftc.teamcode.drive.PinpointDrive;
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.DoubleJointArm;
+import org.firstinspires.ftc.teamcode.subsystems.RollerIntakeSubsystem;
 
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 
 @Config
-@Autonomous(name="SAMPLE", group="Auto")
-public class Blue_Red_Autonomous extends CommandOpMode {
+@Autonomous(name="Operation_Specimen_Auto", group="Auto")
+public class NewAuto_operationSpecimenAuto extends CommandOpMode {
     @Override
     public void initialize() {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-        DriveSubsystem drive = new DriveSubsystem(new PinpointDrive(hardwareMap, new Pose2d(0, 0,0)), telemetry);
+        DriveSubsystem drive = new DriveSubsystem(new PinpointDrive(hardwareMap, new Pose2d(0, 56, Math.toRadians(270))), telemetry);
 
         Action trajectoryAction = drive.actionBuilder(drive.getPose())
-                .splineTo(new Vector2d(10, 10), Math.PI / 2)
+                .lineToY(32)
+                .lineToY(44)
+                .splineTo(new Vector2d(-40, 38), Math.PI / 2)
                 .build();
-
         Command trajectory = new ActionCommand(trajectoryAction, Stream.of(drive).collect(Collectors.toSet()));
-        schedule(trajectory);
-        // TODO: create wrappers for trajectory following maybe possibly
-        // this RunCommand Loop might be useless
+
+        //DoubleJointArm doubleJointArm = new DoubleJointArm(hardwareMap, telemetry);
+        //doubleJointArm.setDefaultCommand(new RunCommand(doubleJointArm::holdPosition, doubleJointArm));
+
+        SequentialCommandGroup routine = new SequentialCommandGroup(
+               trajectory
+               // other command
+        );
+
+        schedule(routine);
         schedule(new RunCommand(() -> {
             TelemetryPacket packet = new TelemetryPacket();
             Pose2d pose = drive.getPose();
-            telemetry.addData("x", pose.position.x);
-            telemetry.addData("y",pose.position.y);
-            telemetry.addData("heading (deg)", Math.toDegrees(pose.heading.toDouble()));
+            telemetry.addData("X pos", pose.position.x);
+            telemetry.addData("Y pos",pose.position.y);
+            telemetry.addData("Heading (deg)", Math.toDegrees(pose.heading.toDouble()));
             telemetry.update();
-            packet.fieldOverlay().setStroke("#3F51B5");
+            packet.fieldOverlay().setStroke("#683fb5"); //color changed from #3F51B5
             Drawing.drawRobot(packet.fieldOverlay(), pose);
             FtcDashboard.getInstance().sendTelemetryPacket(packet);
         }));
