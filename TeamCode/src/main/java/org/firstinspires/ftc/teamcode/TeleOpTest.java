@@ -49,7 +49,7 @@ public class TeleOpTest extends CommandOpMode {
                 () -> -driver.getRightX(),
                 true);
 
-        // Initialize arm subsystems
+        // Initialize arm subsystems below
         NewArmShoulderSubsystem shoulder = new NewArmShoulderSubsystem(hardwareMap, telemetry);
         NewArmElbowSubsystem elbow = new NewArmElbowSubsystem(hardwareMap, telemetry);
 
