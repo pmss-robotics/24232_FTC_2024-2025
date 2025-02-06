@@ -37,9 +37,34 @@ public class NewAuto_operationSpecimenAuto extends CommandOpMode {
         DriveSubsystem drive = new DriveSubsystem(new PinpointDrive(hardwareMap, new Pose2d(0, 56, Math.toRadians(270))), telemetry);
 
         Action trajectoryAction = drive.actionBuilder(drive.getPose())
-                .lineToY(32)
-                .lineToY(44)
-                .splineTo(new Vector2d(-40, 38), Math.PI / 2)
+                .lineToY(32) //put on chamber
+                .lineToY(44) //back away
+                .turn(Math.toRadians(-90)) //turn to robot right
+                .lineToX(-34) //go away from submersible
+                .turn(Math.toRadians(90)) // go past the first blue brick
+                .lineToY(10) //go far
+                .turn(Math.toRadians(-90)) //turn to robot right
+                .lineToX(-48) //line up with 3brick1
+                .turn(Math.toRadians((-90))) //turn towards 3brick1
+                .lineToY(60) //push 3brick2 into o-zone
+                .lineToY(10) //back up
+                .turn(Math.toRadians(90)) //turn to go X
+                .lineToX(-55) //line up with 3brick2n
+                .turn(Math.toRadians((-90))) //turn towards 3brick2
+                .lineToY(60) //push 3brick2 into o-zone
+                .lineToY(10) //back up
+                .turn(Math.toRadians(90)) //turn to go X
+                .lineToX(-60) //line up with 3brick3
+                .turn(Math.toRadians((-90))) //turn towards 3brick3
+                .lineToY(60) //push 3brick3 into o-zone
+
+
+
+
+
+
+                //.turn(Math.toRadians(90)) save_fl
+
                 .build();
         Command trajectory = new ActionCommand(trajectoryAction, Stream.of(drive).collect(Collectors.toSet()));
 
