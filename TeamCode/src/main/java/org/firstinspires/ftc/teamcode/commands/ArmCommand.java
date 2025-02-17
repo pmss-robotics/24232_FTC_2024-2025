@@ -2,14 +2,14 @@ package org.firstinspires.ftc.teamcode.commands;
 
 import com.arcrobotics.ftclib.command.CommandBase;
 
-import org.firstinspires.ftc.teamcode.subsystems.FeedforwardArmSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.FeedForwardArmSubsystem;
 
 import java.util.function.DoubleSupplier;
 
 public class ArmCommand extends CommandBase {
-    private final FeedforwardArmSubsystem feedforwardArmSubsystem;
+    private final FeedForwardArmSubsystem feedforwardArmSubsystem;
     private final DoubleSupplier lt, rt;
-    public ArmCommand(FeedforwardArmSubsystem feedforwardArmSubsystem, DoubleSupplier lt, DoubleSupplier rt) {
+    public ArmCommand(FeedForwardArmSubsystem feedforwardArmSubsystem, DoubleSupplier lt, DoubleSupplier rt) {
         this.feedforwardArmSubsystem = feedforwardArmSubsystem;
         this.lt = lt;
         this.rt = rt;
@@ -17,10 +17,15 @@ public class ArmCommand extends CommandBase {
     }
     @Override
     public void execute() {
-        if (rt.getAsDouble() == 0 && lt.getAsDouble() == 0) {
+        if (lt.getAsDouble() == 0 && rt.getAsDouble() == 0){
             feedforwardArmSubsystem.holdPosition();
+        } else if (lt.getAsDouble() == 0) {
+            feedforwardArmSubsystem.shoulderHoldPosition();
+        } else if (rt.getAsDouble() == 0) {
+            feedforwardArmSubsystem.elbowHoldPosition();
         } else {
-            feedforwardArmSubsystem.move(rt.getAsDouble() - lt.getAsDouble());
+            feedforwardArmSubsystem.shoulderMoveTo(lt.getAsDouble());
+            feedforwardArmSubsystem.elbowMoveTo(rt.getAsDouble());
         }
     }
 
