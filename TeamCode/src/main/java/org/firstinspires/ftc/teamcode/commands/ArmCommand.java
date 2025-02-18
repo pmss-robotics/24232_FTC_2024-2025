@@ -17,16 +17,12 @@ public class ArmCommand extends CommandBase {
     }
     @Override
     public void execute() {
-        if (lt.getAsDouble() == 0 && rt.getAsDouble() == 0){
-            feedforwardArmSubsystem.holdPosition();
-        } else if (lt.getAsDouble() == 0) {
+        /*if (lt.getAsDouble() == 0) {
             feedforwardArmSubsystem.shoulderHoldPosition();
-        } else if (rt.getAsDouble() == 0) {
-            feedforwardArmSubsystem.elbowHoldPosition();
         } else {
             feedforwardArmSubsystem.shoulderMoveTo(lt.getAsDouble());
-            feedforwardArmSubsystem.elbowMoveTo(rt.getAsDouble());
-        }
+        }*/
+
     }
 
 }

@@ -12,6 +12,7 @@ import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.RunCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.button.GamepadButton;
+import com.arcrobotics.ftclib.command.button.Trigger;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
@@ -32,7 +33,7 @@ import org.firstinspires.ftc.teamcode.subsystems.ArmSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.ClawSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.FeedForwardArmSubsystem;
-import org.firstinspires.ftc.teamcode.util.States;
+//import org.firstinspires.ftc.teamcode.util.States;
 //import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
 
 /*
@@ -72,11 +73,24 @@ public class TestTeleOp extends CommandOpMode {
                 true);
 
         arm = new FeedForwardArmSubsystem(hardwareMap, telemetry);
-        ArmCommand armCommand = new ArmCommand(arm,
-                () -> -tools.getLeftY(),
-                () -> -tools.getRightY()
-        );
-        arm.setDefaultCommand(armCommand);
+        arm.setDefaultCommand(new RunCommand(() -> arm.holdPosition(), arm));
+        new Trigger(() -> tools.getLeftY() != 0 || tools.getRightY() != 0)
+                .whileActiveContinuous(new InstantCommand(() -> {
+                    arm.shoulder1.setPower(tools.getRightY() * 0.5);
+                    arm.shoulder2.setPower(tools.getRightY() * 0.5);
+                    arm.shoulderTarget = arm.shoulder1.getCurrentPosition();
+
+                    arm.elbow.setPower(tools.getLeftY() * 0.8);
+                    arm.elbowTarget = arm.elbow.getCurrentPosition();
+                }, arm))
+                .whenInactive(new InstantCommand(() -> {
+                    arm.shoulder1.setPower(0);
+                    arm.shoulder2.setPower(0);
+                    arm.shoulderTarget = arm.shoulder1.getCurrentPosition();
+
+                    arm.elbow.setPower(0);
+                    arm.elbowTarget = arm.elbow.getCurrentPosition();
+                }, arm));
 
         claw = new ClawSubsystem(hardwareMap, telemetry);
         /*
