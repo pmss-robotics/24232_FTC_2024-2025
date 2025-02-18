@@ -74,10 +74,13 @@ public class TestTeleOp extends CommandOpMode {
 
         arm = new FeedForwardArmSubsystem(hardwareMap, telemetry);
         arm.setDefaultCommand(new RunCommand(() -> arm.holdPosition(), arm));
+
+        claw = new ClawSubsystem(hardwareMap, telemetry);
+
         new Trigger(() -> tools.getLeftY() != 0 || tools.getRightY() != 0)
                 .whileActiveContinuous(new InstantCommand(() -> {
-                    arm.shoulder1.setPower(tools.getRightY() * 0.5);
-                    arm.shoulder2.setPower(tools.getRightY() * 0.5);
+                    arm.shoulder1.setPower(-tools.getRightY() * 0.5);
+                    arm.shoulder2.setPower(-tools.getRightY() * 0.5);
                     arm.shoulderTarget = arm.shoulder1.getCurrentPosition();
 
                     arm.elbow.setPower(tools.getLeftY() * 0.8);
@@ -92,7 +95,47 @@ public class TestTeleOp extends CommandOpMode {
                     arm.elbowTarget = arm.elbow.getCurrentPosition();
                 }, arm));
 
-        claw = new ClawSubsystem(hardwareMap, telemetry);
+        // rotate wrist/claw
+        new GamepadButton(tools, GamepadKeys.Button.LEFT_BUMPER).whenPressed(
+            new InstantCommand(() -> {
+
+            })
+        );
+
+        // Submersible In
+        new GamepadButton(tools, GamepadKeys.Button.A).whenPressed(
+                new InstantCommand(()-> {
+                    claw.clawOpen();
+                    arm.shoulderMoveTo(arm.ps_SubmersibleIn);
+                    arm.elbowMoveTo(arm.pe_SubmersibleIn);
+                })
+        );
+
+        // Submersible Intake
+        new GamepadButton(tools, GamepadKeys.Button.A).whenPressed(
+                new InstantCommand(() -> {
+                    arm.elbowMoveTo(arm.pe_SubmersibleIntake);
+                    claw.clawClosed();
+                })
+        );
+        // Toggle Intake when Wrong
+        new GamepadButton(tools, GamepadKeys.Button.X).toggleWhenPressed(
+                new InstantCommand(() -> {
+                    claw.clawOpen();
+                    arm.elbowMoveTo(arm.pe_SubmersibleIn);
+                })
+        );
+
+        // Specimen Intake
+        new GamepadButton(tools, GamepadKeys.Button.A).toggleWhenPressed(
+                new InstantCommand(() -> {
+                    claw.clawOpen();
+                    arm.elbowMoveTo(arm.pe_SubmersibleIn);
+                })
+        );
+
+
+
         /*
         ClawCommand clawCommand = new ClawCommand(arm,
                 () ->

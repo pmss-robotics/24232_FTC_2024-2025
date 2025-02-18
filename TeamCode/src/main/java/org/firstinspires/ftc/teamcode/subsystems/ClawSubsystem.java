@@ -1,23 +1,14 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import android.bluetooth.le.ScanSettings;
-
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.SubsystemBase;
-import com.arcrobotics.ftclib.hardware.ServoEx;
-import com.arcrobotics.ftclib.hardware.SimpleServo;
-import com.arcrobotics.ftclib.util.InterpLUT;
 import com.arcrobotics.ftclib.util.MathUtils;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PwmControl;
-import com.qualcomm.robotcore.hardware.ServoImpl;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
-import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-
-import java.lang.annotation.Target;
-import java.util.Objects;
 
 // https://docs.ftclib.org/ftclib/command-base/command-system/subsystems
 @Config
@@ -27,11 +18,12 @@ public class ClawSubsystem extends SubsystemBase {
     public ServoImplEx claw, wrist; // wrist rotates claw
     public double position;
     double startPos = 0;
+    boolean wristDirectionForward = true;
 
     // write in degrees
-    //public static double W_target = 0, C_target = 0; // in degrees
-    //public static double pWStart = 1, pWBucket = 1, pWIntake = 1;
-    //public static double pCClosed = 1, pCOpen = 1;
+    public static double W_target = 0, C_target = 0; // in degrees
+    public static double pWStart = 0.158, pW90 = 0.180, pW180 = 0.207;
+    public static double pCClosed = 0.42, pCOpen = 0.69;
 
     public ClawSubsystem(HardwareMap hardwareMap, Telemetry telemetry) {
         this.telemetry = telemetry;
@@ -42,8 +34,53 @@ public class ClawSubsystem extends SubsystemBase {
         wrist.setPwmRange(new PwmControl.PwmRange(500, 2500));
         claw.setPwmRange(new PwmControl.PwmRange(500, 2500));
 
-        //wrist.setPosition(pWStart);
-        //claw.setPosition(pCStart);
+        wrist.setPosition(pWStart);
+        claw.setPosition(pCClosed);
+    }
+
+    public void changeWristPosition() {
+        if (wrist.getPosition() == pWStart){
+
+        } else if (wrist.getPosition() == pW90) {
+            if (wristDirectionForward){
+                setWristPosition(pW180);
+            } else {
+                setWristPosition(pWStart);
+            }
+        } else if (wrist.getPosition() == pW180){
+            if (wristDirectionForward){
+                setWristDirection();
+                setWristPosition(pW90);
+            }
+        }
+
+        if (wrist.getPosition() < pWStart) {
+            if (!wristDirectionForward){
+                wrist.setDirection(Servo.Direction.FORWARD);
+            }
+            setWristPosition(pWStart);
+        } else if (wrist.getPosition() >= pWStart && wrist.getPosition() < pW90) {
+            if (wristDirectionForward){
+                setWristPosition(pW90);
+            } else {
+                setWristPosition(pWStart);
+            }
+        } else if (wrist.getPosition() >= pW90 && wrist.getPosition() < pW180) {
+            if (wristDirectionForward){
+                setWristPosition(pW180);
+            } else {
+                setWristPosition(pW90);
+            }
+            wrist.setDirection(Servo.Direction.FORWARD);
+            setWristPosition(pW90);
+        } else {
+            wrist.setDirection(Servo.Direction.REVERSE);
+            setWristPosition(pWStart);
+        }
+    }
+
+    public void setWristDirection() {
+        wrist.setDirection(Servo.Direction.FORWARD);
     }
 
 
@@ -51,6 +88,14 @@ public class ClawSubsystem extends SubsystemBase {
     public void periodic() {
         telemetry.addData("Wrist Position", wrist.getPosition());
         telemetry.addData("Claw Position", claw.getPosition());
+    }
+
+    public void clawOpen() {
+        claw.setPosition(pCOpen);
+    }
+
+    public void clawClosed() {
+        claw.setPosition(pCClosed);
     }
 
     private double range(double increment){

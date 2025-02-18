@@ -22,11 +22,11 @@ public class FeedForwardArmSubsystem extends SubsystemBase {
     // I Have no freaking clue how to tune kCos and kV
     // ignore kA if the component has not much inertia
     //shoulder
-    public static double sP = 0.000, sI = 0.000, sD = 0.000;
+    public static double sP = 0.03, sI = 0.000, sD = 0.000;
     public static double ks_Cos = 0.000, ks_A = 0; // ks_S, ks_V?
     //elbow
     public static double eP = 0.000, eI = 0.000, eD = 0.000;
-    public static double ke_Cos = 0.000, ke_A = 0; //
+    public static double ke_Cos = 0.000, ke_A = 0;
 
     public static double shoulderTicksPerRev = 2786.2, elbowTicksPerRev = 3895.9;
 
@@ -36,8 +36,8 @@ public class FeedForwardArmSubsystem extends SubsystemBase {
     // TODO: Telemetry get position then input values in the following
     public static double shoulderTarget, elbowTarget; //change to int after getting positions in degrees
     public double maxShoulderAngle = 200, maxElbowAngle = 300;
-    public static int ps_Home = 0, ps_Bucket = 0, ps_SpecimenOut = 0, ps_SpecimenIn = 0, ps_SubmersibleIn = 0, ps_Sweep = 0; //shoulder
-    public static int pe_Home = 0, pe_Bucket = 0, pe_SpecimenOut = 0, pe_SpecimenIn = 0, pe_SubmersibleIn = 0, pe_Sweep = 0; // elbow
+    public static int ps_Home = 0, ps_Bucket = 0, ps_SpecimenOut = 0, ps_SpecimenIn = 0, ps_SubmersibleIn = 100, ps_SubmersibleIntake = 0, ps_SubmersibleOut = 0, ps_Sweep = 0; //shoulder
+    public static int pe_Home = 0, pe_Bucket = 0, pe_SpecimenOut = 0, pe_SpecimenIn = 0, pe_SubmersibleIn = -400, pe_SubmersibleIntake = 0, pe_SubmersibleOut = -200, pe_Sweep = 0; // elbow
 
     // TODO: CHANGE
     public static double shoulderTolerance = 30;
@@ -72,6 +72,11 @@ public class FeedForwardArmSubsystem extends SubsystemBase {
         elbowPidController.setTolerance(elbowTolerance);
         elbowTarget = 0;
     }
+
+    public void setShoulderSubmersible() {
+        shoulderMoveTo(ps_SubmersibleIn);
+    }
+
     @Override
     public void periodic() {
         telemetry.addData("Shoulder Target: ", shoulderTarget);
@@ -121,7 +126,6 @@ public class FeedForwardArmSubsystem extends SubsystemBase {
         shoulderPidController.setTolerance(shoulderTolerance);
         int current = shoulder1.getCurrentPosition();
 
-
         double power = shoulderPidController.calculate(current, shoulderTarget);
         double angle = (2 * Math.PI * current) / shoulderTicksPerRev;
 
@@ -135,14 +139,13 @@ public class FeedForwardArmSubsystem extends SubsystemBase {
         }
 
         telemetry.addData("Shoulder Power:", "%.6f", power);
-        telemetry.addData("Shoulder Angle:", Math.toDegrees(angle));
         return power;
     }
 
     private double elbowCalculate() {
         elbowPidController.setPID(eP,eI,eD);
         elbowPidController.setTolerance(elbowTolerance);
-        int current = shoulder1.getCurrentPosition();
+        int current = elbow.getCurrentPosition();
 
         double power = elbowPidController.calculate(current, elbowTarget);
         double angle = (2 * Math.PI * current) / elbowTicksPerRev;
