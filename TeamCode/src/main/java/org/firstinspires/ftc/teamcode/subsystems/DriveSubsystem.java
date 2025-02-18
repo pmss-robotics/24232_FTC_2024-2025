@@ -16,7 +16,7 @@ import org.firstinspires.ftc.teamcode.drive.PinpointLocalizer;
 
 @Config
 public class DriveSubsystem extends SubsystemBase {
-    private final MecanumDrive drive;
+    private MecanumDrive drive = null;
 
     private Telemetry telemetry;
     public DriveSubsystem(MecanumDrive drive, Telemetry telemetry) {
@@ -63,6 +63,10 @@ public class DriveSubsystem extends SubsystemBase {
 
     public TrajectoryActionBuilder actionBuilder(Pose2d beginPose) {
         return drive.actionBuilder(beginPose);
+    }
+
+    public Pose2d getPose() {
+        return drive.localizer.getPose();
     }
 
 }

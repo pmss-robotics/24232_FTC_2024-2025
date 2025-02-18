@@ -22,10 +22,10 @@ public class FeedForwardArmSubsystem extends SubsystemBase {
     // I Have no freaking clue how to tune kCos and kV
     // ignore kA if the component has not much inertia
     //shoulder
-    public static double sP = 0.001, sI = 0.000, sD = 0.000;
+    public static double sP = 0.000, sI = 0.000, sD = 0.000;
     public static double ks_Cos = 0.000, ks_A = 0; // ks_S, ks_V?
     //elbow
-    public static double eP = 0.001, eI = 0.000, eD = 0.000;
+    public static double eP = 0.000, eI = 0.000, eD = 0.000;
     public static double ke_Cos = 0.000, ke_A = 0; //
 
     public static double shoulderTicksPerRev = 2786.2, elbowTicksPerRev = 3895.9;

@@ -102,10 +102,10 @@ public class TestTeleOp extends CommandOpMode {
 
         schedule(new RunCommand(() -> {
             TelemetryPacket packet = new TelemetryPacket();
-            //Pose2d pose = drive.localizer.getPose();
-            //telemetry.addData("x", pose.position.x);
-            //telemetry.addData("y",pose.position.y);
-            //telemetry.addData("heading (deg)", Math.toDegrees(pose.heading.toDouble()));
+            Pose2d pose = drive.getPose();
+            telemetry.addData("x", pose.position.x);
+            telemetry.addData("y",pose.position.y);
+            telemetry.addData("heading (deg)", Math.toDegrees(pose.heading.toDouble()));
             telemetry.update();
 
             packet.fieldOverlay().setStroke("#3F51B5");
