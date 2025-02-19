@@ -20,10 +20,11 @@ public class ClawSubsystem extends SubsystemBase {
     double startPos = 0;
     boolean wristDirectionForward = true;
 
-    // write in degrees
     public static double W_target = 0, C_target = 0; // in degrees
     public static double pWStart = 0.158, pW90 = 0.180, pW180 = 0.207;
+    public static double pWPos = pWStart;
     public static double pCClosed = 0.42, pCOpen = 0.69;
+    public static double pCPos = pCClosed;
 
     public ClawSubsystem(HardwareMap hardwareMap, Telemetry telemetry) {
         this.telemetry = telemetry;
@@ -55,21 +56,25 @@ public class ClawSubsystem extends SubsystemBase {
             }
         }*/
 
-        if (wrist.getPosition() == pWStart) {
+        if (pWPos == pWStart) {
             setWristPosition(pW90);
-        } else if (wrist.getPosition() == pW90) {
+            pWPos = pW90;
+        } else if (pWPos == pW90) {
             setWristPosition(pW180);
-        } else if (wrist.getPosition() == pW180) {
-            setWristPosition(pWStart);
+            pWPos = pW180;
         } else {
             setWristPosition(pWStart);
+            pWPos = pWStart;
         }
     }
+
     public void changeClawState() {
-        if (claw.getPosition() == pCClosed){
+        if (pCPos == pCClosed){
             claw.setPosition(pCOpen);
+            pCPos = pCOpen;
         } else {
             claw.setPosition(pCClosed);
+            pCPos = pCClosed;
         }
     }
 
