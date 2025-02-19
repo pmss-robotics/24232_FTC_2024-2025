@@ -39,6 +39,7 @@ public class ClawSubsystem extends SubsystemBase {
     }
 
     public void changeWristPosition() {
+        /* Rotating Back and Forth
         if (wrist.getPosition() == pWStart){
 
         } else if (wrist.getPosition() == pW90) {
@@ -52,37 +53,25 @@ public class ClawSubsystem extends SubsystemBase {
                 setWristDirection();
                 setWristPosition(pW90);
             }
-        }
+        }*/
 
-        if (wrist.getPosition() < pWStart) {
-            if (!wristDirectionForward){
-                wrist.setDirection(Servo.Direction.FORWARD);
-            }
-            setWristPosition(pWStart);
-        } else if (wrist.getPosition() >= pWStart && wrist.getPosition() < pW90) {
-            if (wristDirectionForward){
-                setWristPosition(pW90);
-            } else {
-                setWristPosition(pWStart);
-            }
-        } else if (wrist.getPosition() >= pW90 && wrist.getPosition() < pW180) {
-            if (wristDirectionForward){
-                setWristPosition(pW180);
-            } else {
-                setWristPosition(pW90);
-            }
-            wrist.setDirection(Servo.Direction.FORWARD);
+        if (wrist.getPosition() == pWStart) {
             setWristPosition(pW90);
+        } else if (wrist.getPosition() == pW90) {
+            setWristPosition(pW180);
+        } else if (wrist.getPosition() == pW180) {
+            setWristPosition(pWStart);
         } else {
-            wrist.setDirection(Servo.Direction.REVERSE);
             setWristPosition(pWStart);
         }
     }
-
-    public void setWristDirection() {
-        wrist.setDirection(Servo.Direction.FORWARD);
+    public void changeClawState() {
+        if (claw.getPosition() == pCClosed){
+            claw.setPosition(pCOpen);
+        } else {
+            claw.setPosition(pCClosed);
+        }
     }
-
 
     @Override
     public void periodic() {

@@ -98,9 +98,15 @@ public class TestTeleOp extends CommandOpMode {
         // rotate wrist/claw
         new GamepadButton(tools, GamepadKeys.Button.LEFT_BUMPER).whenPressed(
             new InstantCommand(() -> {
-
+                claw.changeWristPosition();
             })
         );
+        new GamepadButton(tools, GamepadKeys.Button.RIGHT_BUMPER).whenPressed(
+                new InstantCommand(() -> {
+                    claw.changeClawState();
+                })
+        );
+
 
         // Submersible In
         new GamepadButton(tools, GamepadKeys.Button.A).whenPressed(

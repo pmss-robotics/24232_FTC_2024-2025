@@ -17,18 +17,23 @@ public class FeedForwardArmSubsystem extends SubsystemBase {
     public DcMotorEx shoulder1, shoulder2, elbow;
     Telemetry telemetry;
 
-
+    public static double shoulderTicksPerRev = 2786.2, elbowTicksPerRev = 3895.9;
     // to find kS, it is the amount of voltage before the arm starts moving.
     // I Have no freaking clue how to tune kCos and kV
     // ignore kA if the component has not much inertia
     //shoulder
-    public static double sP = 0.03, sI = 0.000, sD = 0.000;
-    public static double ks_Cos = 0.000, ks_A = 0; // ks_S, ks_V?
-    //elbow
-    public static double eP = 0.000, eI = 0.000, eD = 0.000;
-    public static double ke_Cos = 0.000, ke_A = 0;
+    //At Different Positions
+    public static double shoulderAngleOffset = 0.56377730486; //250 / shoulderTicksPerRev * (2 * Math.PI);
+    public static double sP1 = 0.01, sI1 = 0.000, sD1 = 0.000;
+    public static double ks1_Cos = 0.069;
 
-    public static double shoulderTicksPerRev = 2786.2, elbowTicksPerRev = 3895.9;
+    public static double sP2 = 0.018, sI2 = 0.000, sD2 = 0.001;
+    public static double ks2_Cos = 0.015;
+
+    //elbow
+    public static double elbowAngleOffset = 2.3561944902;
+    public static double eP = 0.02, eI = 0.000, eD = 0.000;
+    public static double ke_Cos = 0.01;
 
     //ArmFeedforward shoulderFeedforward = new ArmFeedforward(ks_S, ks_Cos, ks_V, ks_A);
 
@@ -36,8 +41,8 @@ public class FeedForwardArmSubsystem extends SubsystemBase {
     // TODO: Telemetry get position then input values in the following
     public static double shoulderTarget, elbowTarget; //change to int after getting positions in degrees
     public double maxShoulderAngle = 200, maxElbowAngle = 300;
-    public static int ps_Home = 0, ps_Bucket = 0, ps_SpecimenOut = 0, ps_SpecimenIn = 0, ps_SubmersibleIn = 100, ps_SubmersibleIntake = 0, ps_SubmersibleOut = 0, ps_Sweep = 0; //shoulder
-    public static int pe_Home = 0, pe_Bucket = 0, pe_SpecimenOut = 0, pe_SpecimenIn = 0, pe_SubmersibleIn = -400, pe_SubmersibleIntake = 0, pe_SubmersibleOut = -200, pe_Sweep = 0; // elbow
+    public static int ps_Home = 0, ps_Bucket = 800, ps_SpecimenOut = 500, ps_SpecimenIn = 400, ps_SubmersibleIn = 250, ps_SubmersibleIntake = 240, ps_SubmersibleOut = 250; //ps_Sweep = 0; //shoulder
+    public static int pe_Home = 200, pe_Bucket = 1600, pe_SpecimenOut = 0, pe_SpecimenIn = 200, pe_SubmersibleIn = 1600, pe_SubmersibleIntake = 1600, pe_SubmersibleOut = 1600; //pe_Sweep = 1700; // elbow
 
     // TODO: CHANGE
     public static double shoulderTolerance = 30;
@@ -62,7 +67,7 @@ public class FeedForwardArmSubsystem extends SubsystemBase {
         setZeroPowerBehavior();
 
         //shoulder
-        shoulderPidController = new PIDController(sP, sI, sD);
+        shoulderPidController = new PIDController(sP1, sI1, sD1);
         shoulderPidController.setTolerance(shoulderTolerance);
         voltageSensor = hardwareMap.voltageSensor.iterator().next();
         shoulderTarget = 0;
@@ -97,7 +102,7 @@ public class FeedForwardArmSubsystem extends SubsystemBase {
 
     public void elbowHoldPosition() {
         double power = elbowCalculate();
-        shoulder1.setPower(power);
+        elbow.setPower(power);
     }
 
     public void shoulderMoveTo(double target){
@@ -105,11 +110,21 @@ public class FeedForwardArmSubsystem extends SubsystemBase {
         shoulderHoldPosition();
     }
 
+
     public void shoulderHoldPosition() {
-        double power = shoulderCalculate();
+        double power;
+        if(shoulder1.getCurrentPosition() <= 250) {
+            shoulderPidController = new PIDController(sP1, sI1, sD1);
+            power = calculate(sP1, sI1, sD1, ks1_Cos, shoulderAngleOffset);
+        } else {
+            shoulderPidController = new PIDController(sP2, sI2, sD2);
+            power = calculate(sP2, sI2, sD2, ks2_Cos, shoulderAngleOffset);
+        }
         shoulder1.setPower(power);
         shoulder2.setPower(power);
     }
+
+    // MANUAL
     public void manual(boolean forward) { //manually moving the motor; need forward = true or false
         double power;
         if(forward) {
@@ -121,7 +136,29 @@ public class FeedForwardArmSubsystem extends SubsystemBase {
         shoulder2.setPower(power);
     }
 
-    private double shoulderCalculate() {
+    private double calculate(double p, double i, double d, double cosine, double angleDifference) {
+        shoulderPidController.setPID(p,i,d);
+        shoulderPidController.setTolerance(shoulderTolerance);
+        int current = shoulder1.getCurrentPosition();
+
+        double power = shoulderPidController.calculate(current, shoulderTarget);
+        double angle = (2 * Math.PI * current) / shoulderTicksPerRev;
+
+        power += cosine * Math.cos(angle - angleDifference); //angleDifference radians
+        power /= voltageSensor.getVoltage();
+
+        if (power < 0) {
+            power = Math.max(-0.6, power);
+        } else if (power > 0){
+            power = Math.min(power, 0.6);
+        }
+
+        telemetry.addData("Shoulder Power:", "%.6f", power);
+        telemetry.addData("Shoulder Angle:", Math.toDegrees(angle));
+        return power;
+    }
+
+    /*private double shoulderCalculate() {
         shoulderPidController.setPID(sP,sI,sD);
         shoulderPidController.setTolerance(shoulderTolerance);
         int current = shoulder1.getCurrentPosition();
@@ -140,7 +177,7 @@ public class FeedForwardArmSubsystem extends SubsystemBase {
 
         telemetry.addData("Shoulder Power:", "%.6f", power);
         return power;
-    }
+    }*/
 
     private double elbowCalculate() {
         elbowPidController.setPID(eP,eI,eD);
