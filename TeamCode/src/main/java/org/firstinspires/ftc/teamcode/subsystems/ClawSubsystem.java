@@ -63,6 +63,7 @@ public class ClawSubsystem extends SubsystemBase {
             setWristPosition(pW180);
             pWPos = pW180;
         } else {
+            setWristPosition(pW90);
             setWristPosition(pWStart);
             pWPos = pWStart;
         }
