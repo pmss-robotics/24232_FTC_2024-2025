@@ -26,66 +26,113 @@ public class SpecimenAuto1 extends CommandOpMode {
     FeedForwardArmSubsystem arm;
     ClawSubsystem claw;
 
-    public static double specimenIntakeWaitTime = 1.0;
-    public static double specimenOuttakeWaitTime = 2.0;
-    public static double submersibleIntakeWaitTime = 2.0;
-
     public void initialize() {
         drive = new DriveSubsystem(new PinpointDrive(hardwareMap, new Pose2d(-10,60,-Math.PI/2)), telemetry);
         arm = new FeedForwardArmSubsystem(hardwareMap, telemetry);
         claw = new ClawSubsystem(hardwareMap, telemetry);
-
         arm.setDefaultCommand(new RunCommand(() -> arm.holdPosition(), arm));
-
-        Action startSpecimenAction3 = drive.actionBuilder(drive.getPose())
-                .strafeTo(new Vector2d(0, 32))
-                .waitSeconds(specimenOuttakeWaitTime)
-                .splineToLinearHeading(new Pose2d(-52, -52, Math.toRadians(80)), Math.PI)
-                .splineToLinearHeading(new Pose2d(-53, -53, Math.toRadians(45)), Math.PI)
-                .splineToLinearHeading(new Pose2d(-52, -52, Math.toRadians(105)), Math.PI)
-                .waitSeconds(specimenIntakeWaitTime)
-                .splineToLinearHeading(new Pose2d(-53, -53, Math.toRadians(45)), Math.PI)
-                .waitSeconds(specimenOuttakeWaitTime)
-                .splineToLinearHeading(new Pose2d(-53, -51, Math.toRadians(120)), Math.PI)
-                .waitSeconds(specimenOuttakeWaitTime)
-                .splineToLinearHeading(new Pose2d(-53, -53, Math.toRadians(45)), Math.PI)
-                .waitSeconds(specimenOuttakeWaitTime)
-                .splineToLinearHeading(new Pose2d(-24, -10, Math.PI), Math.toRadians(0))
-                .waitSeconds(submersibleIntakeWaitTime)
-                .build();
-        //Command startSpecimen3 = new ActionCommand(startSpecimenAction, Stream.of(drive).collect(Collectors.toSet()));arm = new FeedForwardArmSubsystem(hardwareMap, telemetry);
-
-
         Action specimen1Action = drive.actionBuilder(drive.getPose())
+                .waitSeconds(0.5)
                 .strafeTo(new Vector2d(0, 32))
-                .waitSeconds(specimenOuttakeWaitTime)
                 .build();
         Command specimen1Traj = new ActionCommand(specimen1Action, Stream.of(drive).collect(Collectors.toSet()));arm = new FeedForwardArmSubsystem(hardwareMap, telemetry);
 
-        Action driveTrajectoryAction = drive.actionBuilder(drive.getPose())
-                .splineToLinearHeading(new Pose2d(-52, -52, Math.toRadians(80)), Math.PI)
-                .splineToLinearHeading(new Pose2d(-53, -53, Math.toRadians(45)), Math.PI)
-                .splineToLinearHeading(new Pose2d(-52, -52, Math.toRadians(105)), Math.PI)
+        Action pushAction = drive.actionBuilder(drive.getPose())
+                .setTangent(360)
+                .splineTo(new Vector2d(-25.76, 37.60), Math.toRadians(209.44))
+                .splineToSplineHeading(new Pose2d(-37.76, 9.44, Math.toRadians(90.00)), Math.toRadians(-90.00))
+                .splineToConstantHeading(new Vector2d(-47.20, 47.04), Math.toRadians(90.00))
+                .splineToConstantHeading(new Vector2d(-44.32, 13.12), Math.toRadians(253.43))
+                .splineToConstantHeading(new Vector2d(-55.84, 47.20), Math.toRadians(91.13))
+                .splineToConstantHeading(new Vector2d(-57.44, 13.44), Math.toRadians(259.86))
+                .splineToConstantHeading(new Vector2d(-66.72, 49.60), Math.toRadians(90.00))
+                .splineToConstantHeading(new Vector2d(-44.16, 48.16), Math.toRadians(6.43))
+                .splineToConstantHeading(new Vector2d(-44.16, 55.04), Math.toRadians(88.00))
                 .build();
-        Command driveTraj = new ActionCommand(driveTrajectoryAction, Stream.of(drive).collect(Collectors.toSet()));
+        Command pushTraj = new ActionCommand(pushAction, Stream.of(drive).collect(Collectors.toSet()));
 
-
-
-        Action specimen2Action = drive.actionBuilder(drive.getPose())
-                .splineToLinearHeading(new Pose2d(-53, -53, Math.toRadians(45)), Math.PI)
+        Action specimen2OutAction = drive.actionBuilder(drive.getPose())
+                .setTangent(0)
+                .splineToSplineHeading(new Pose2d(-3.20, 34.56, Math.toRadians(-90.00)), Math.toRadians(0.00))
                 .build();
-        Command specimen2Traj = new ActionCommand(specimen2Action, Stream.of(drive).collect(Collectors.toSet()));arm = new FeedForwardArmSubsystem(hardwareMap, telemetry);
+        Command specimen2OutTraj = new ActionCommand(specimen2OutAction, Stream.of(drive).collect(Collectors.toSet()));
 
+        Action specimen3InAction = drive.actionBuilder(drive.getPose())
+                .setTangent(90)
+                .splineToSplineHeading(new Pose2d(-44.16, 46.32, Math.toRadians(90.00)), Math.toRadians(154.96))
+                .splineToConstantHeading(new Vector2d(-44.16, 55.68), Math.toRadians(73.01))
+                .build();
+        Command specimen3InTraj = new ActionCommand(specimen3InAction, Stream.of(drive).collect(Collectors.toSet()));
 
-        /*Command auto = new SequentialCommandGroup(
+        Action specimen3OutAction = drive.actionBuilder(drive.getPose())
+                .setTangent(0)
+                .splineToSplineHeading(new Pose2d(-6.56, 34.56, Math.toRadians(-90.00)), Math.toRadians(0.00))
+                .build();
+        Command specimen3OutTraj = new ActionCommand(specimen3OutAction, Stream.of(drive).collect(Collectors.toSet()));
+
+        Action specimen4InAction = drive.actionBuilder(drive.getPose())
+                .setTangent(90)
+                .splineToSplineHeading(new Pose2d(-44.16, 46.32, Math.toRadians(90.00)), Math.toRadians(160.04))
+                .splineToConstantHeading(new Vector2d(-44.32, 55.20), Math.toRadians(70.25))
+                .build();
+        Command specimen4InTraj = new ActionCommand(specimen4InAction, Stream.of(drive).collect(Collectors.toSet()));
+
+        Action specimen4OutAction = drive.actionBuilder(drive.getPose())
+                .setTangent(0)
+                .splineToSplineHeading(new Pose2d(-9.60, 34.40, Math.toRadians(-90.00)), Math.toRadians(-30.96))
+                .build();
+        Command specimen4OutTraj = new ActionCommand(specimen4OutAction, Stream.of(drive).collect(Collectors.toSet()));
+
+        Action specimen5InAction = drive.actionBuilder(drive.getPose())
+                .setTangent(90)
+                .splineToSplineHeading(new Pose2d(-43.84, 46.84, Math.toRadians(90.00)), Math.toRadians(154.18))
+                .splineToConstantHeading(new Vector2d(-44.32, 55.20), Math.toRadians(52.59))
+                .build();
+        Command specimen5InTraj = new ActionCommand(specimen5InAction, Stream.of(drive).collect(Collectors.toSet()));
+
+        Action specimen5OutAction = drive.actionBuilder(drive.getPose())
+                .setTangent(0)
+                .splineToSplineHeading(new Pose2d(-12.00, 34.24, Math.toRadians(-90.00)), Math.toRadians(-34.59))
+                .build();
+        Command specimen5OutTraj = new ActionCommand(specimen5OutAction, Stream.of(drive).collect(Collectors.toSet()));
+
+        int specInTime = 300;
+        int specOutTime = 200;
+
+        Command auto = new SequentialCommandGroup(
                 new InstantCommand(() -> arm.shoulderMoveTo(arm.ps_SpecimenOut1)),
                 specimen1Traj,
-                new InstantCommand(() -> arm.shoulderMoveTo(arm.ps_SpecimenOut2)), //can do things while driving; no need for wait
-                driveTraj,
-                specimenIntakePrep
+                new InstantCommand(() -> arm.shoulderMoveTo(arm.ps_SpecimenIn1)),
+                new WaitCommand(specOutTime),
 
+                pushTraj,
+                new WaitCommand(specInTime),
+                new InstantCommand(() -> arm.shoulderMoveTo(arm.ps_SpecimenOut1)),
+                specimen2OutTraj,
+                new InstantCommand(() -> arm.shoulderMoveTo(arm.ps_SpecimenIn1)),
+                new WaitCommand(specOutTime),
 
-        );*/
+                specimen3InTraj,
+                new WaitCommand(specInTime),
+                new InstantCommand(() -> arm.shoulderMoveTo(arm.ps_SpecimenOut1)),
+                specimen3OutTraj,
+                new InstantCommand(() -> arm.shoulderMoveTo(arm.ps_SpecimenIn1)),
+                new WaitCommand(specOutTime),
+
+                specimen4InTraj,
+                new WaitCommand(specInTime),
+                new InstantCommand(() -> arm.shoulderMoveTo(arm.ps_SpecimenOut1)),
+                specimen4OutTraj,
+                new InstantCommand(() -> arm.shoulderMoveTo(arm.ps_SpecimenIn1)),
+                new WaitCommand(specOutTime),
+
+                specimen5InTraj,
+                new WaitCommand(specInTime),
+                new InstantCommand(() -> arm.shoulderMoveTo(arm.ps_SpecimenOut1)),
+                specimen5OutTraj,
+                new InstantCommand(() -> arm.shoulderMoveTo(arm.ps_SpecimenIn1))
+        );
+        schedule(auto);
 
     }
 

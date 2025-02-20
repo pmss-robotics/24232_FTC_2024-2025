@@ -23,7 +23,7 @@ public class FeedForwardArmSubsystem extends SubsystemBase {
     // ignore kA if the component has not much inertia
     //shoulder
     //At Different Positions
-    public static double shoulderAngleOffset = 0.56377730486; //250 / shoulderTicksPerRev * (2 * Math.PI);
+    public static double shoulderAngleOffset = 0.98097251045; //0.56377730486; //250 / shoulderTicksPerRev * (2 * Math.PI);
     public static double sP1 = 0.0105, sI1 = 0.000, sD1 = 0.000;
     public static double ks1_Cos = 0.069;
 
@@ -41,14 +41,16 @@ public class FeedForwardArmSubsystem extends SubsystemBase {
     // TODO: Telemetry get position then input values in the following
     public static double shoulderTarget, elbowTarget; //change to int after getting positions in degrees
     public double maxShoulderAngle = 200, maxElbowAngle = 300;
+
     //Shoulder position constants
     public static int ps_Home = 0;
     public static int ps_Bucket = 600, ps_SpecimenOut1 = 650, ps_SpecimenOut2 = 400;
     public static int ps_SpecimenIn1 = 295, ps_SpecimenIn2 = 500, ps_SubmersibleIn = 280, ps_SubmersibleIntake = 180;
+
     //Elbow position constants
     public static int pe_Home = 100;
     public static int pe_Bucket = 1200;
-    public static int pe_SubmersibleIn = 1600, pe_TuckIn = 400, pe_Observation = 1400;
+    public static int pe_SubmersibleIn = 1600, pe_TuckIn = 350, pe_Observation = 1400;
 
     // TODO: CHANGE
     public static double shoulderTolerance = 15;
@@ -124,7 +126,7 @@ public class FeedForwardArmSubsystem extends SubsystemBase {
 
     public void shoulderHoldPosition() {
         double power;
-        if(shoulder1.getCurrentPosition() <= 250) {
+        if(shoulder1.getCurrentPosition() <= 350) {
             shoulderPidController = new PIDController(sP1, sI1, sD1);
             power = calculate(sP1, sI1, sD1, ks1_Cos, shoulderAngleOffset);
         } else {

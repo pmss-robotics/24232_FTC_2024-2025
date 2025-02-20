@@ -65,21 +65,6 @@ public class TestTeleOp extends CommandOpMode {
                 true);
         drive.setDefaultCommand(driveCommand);
 
-        new GamepadButton(driver, GamepadKeys.Button.X).whenPressed(() -> {
-            Pose2d currentPose = drive.getPose();
-
-            Action turn180Action = drive.actionBuilder(currentPose)
-                    .turn(Math.toRadians(180))
-                    .build();
-
-            schedule(new ActionCommand(turn180Action, Collections.singleton(drive)));
-        });
-
-        new GamepadButton(driver, GamepadKeys.Button.Y).whenPressed(() ->
-            new InstantCommand(() -> drive.drive.pinpoint.resetPosAndIMU())
-        );
-
-
         new GamepadButton(driver, GamepadKeys.Button.A).whenPressed(() -> {
             Pose2d currentPose = drive.getPose();
 
@@ -135,11 +120,11 @@ public class TestTeleOp extends CommandOpMode {
         // 2. RIGHT_BUMPER on DRIVER: Tuck in the arm for easier drive
         new GamepadButton(driver, GamepadKeys.Button.RIGHT_BUMPER).whenPressed(
                 new SequentialCommandGroup(
-                        new InstantCommand(() -> arm.shoulderMoveTo(arm.ps_Home), arm),
+                        new InstantCommand(() -> arm.elbowMoveTo(arm.pe_TuckIn), arm),
                         new WaitUntilCommand(() ->
-                                Math.abs(arm.shoulder1.getCurrentPosition() - arm.shoulderTarget) <= arm.shoulderTolerance
+                                Math.abs(arm.elbow.getCurrentPosition() - arm.elbowTarget) <= arm.elbowTolerance
                         ),
-                        new InstantCommand(() -> arm.elbowMoveTo(arm.pe_TuckIn), arm)
+                        new InstantCommand(() -> arm.shoulderMoveTo(arm.ps_Home), arm)
                 )
         );
 
@@ -165,7 +150,8 @@ public class TestTeleOp extends CommandOpMode {
                 new InstantCommand(() -> claw.clawClosed(), claw)
         );*/
 
-        //-------------------------------------Gamepad Driver---------------------------------------------
+
+        //-------------------------------------Gamepad Tools---------------------------------------------
         // 1. RIGHT_BUMPER on TOOLS: Rotates the wrist
         new GamepadButton(tools, GamepadKeys.Button.DPAD_DOWN).whenPressed(
                 new InstantCommand(() -> claw.changeWristPosition(), claw)
