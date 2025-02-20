@@ -3,23 +3,18 @@ package org.firstinspires.ftc.teamcode.subsystems;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
-import com.acmerobotics.roadrunner.Rotation2d;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
-import org.firstinspires.ftc.teamcode.drive.GoBildaPinpointDriver;
-import org.firstinspires.ftc.teamcode.drive.MecanumDrive;
-import org.firstinspires.ftc.teamcode.drive.PinpointLocalizer;
+import org.firstinspires.ftc.teamcode.drive.PinpointDrive;
 
 @Config
 public class DriveSubsystem extends SubsystemBase {
-    private MecanumDrive drive = null;
-
+    public final PinpointDrive drive;
     private Telemetry telemetry;
-    public DriveSubsystem(MecanumDrive drive, Telemetry telemetry) {
+    public DriveSubsystem(PinpointDrive drive, Telemetry telemetry) {
         this.drive = drive;
         this.telemetry = telemetry;
     }
@@ -28,11 +23,10 @@ public class DriveSubsystem extends SubsystemBase {
     field centric means that 'forward' or any other direction is always relative to the
     driver / field i.e. it stays constant regardless of the robot's current heading
      */
-
     public void fieldCentric(double lx, double ly, double rx) {
         // TODO verify if this works the inverse() might not be necessary
         setDrivePowers(new PoseVelocity2d(
-                drive.localizer.getPose().heading.inverse().times(new Vector2d(ly, lx)),
+                drive.pose.heading.inverse().times(new Vector2d(ly, lx)),
                 rx
         ));
         updatePoseEstimate();
@@ -41,7 +35,6 @@ public class DriveSubsystem extends SubsystemBase {
     /*
     robot centric means that direction is always relative to the robot
      */
-
     public void robotCentric(double lx, double ly, double rx) {
         setDrivePowers(new PoseVelocity2d(
                 new Vector2d(
@@ -66,7 +59,6 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     public Pose2d getPose() {
-        return drive.localizer.getPose();
+        return drive.pose;
     }
-
 }

@@ -24,7 +24,7 @@ public class FeedForwardArmSubsystem extends SubsystemBase {
     //shoulder
     //At Different Positions
     public static double shoulderAngleOffset = 0.56377730486; //250 / shoulderTicksPerRev * (2 * Math.PI);
-    public static double sP1 = 0.01, sI1 = 0.000, sD1 = 0.000;
+    public static double sP1 = 0.0105, sI1 = 0.000, sD1 = 0.000;
     public static double ks1_Cos = 0.069;
 
     public static double sP2 = 0.018, sI2 = 0.000, sD2 = 0.001;
@@ -41,12 +41,18 @@ public class FeedForwardArmSubsystem extends SubsystemBase {
     // TODO: Telemetry get position then input values in the following
     public static double shoulderTarget, elbowTarget; //change to int after getting positions in degrees
     public double maxShoulderAngle = 200, maxElbowAngle = 300;
-    public static int ps_Home = 0, ps_Bucket = 800, ps_SpecimenOut = 500, ps_SpecimenIn = 400, ps_SubmersibleIn = 250, ps_SubmersibleIntake = 240, ps_SubmersibleOut = 250; //ps_Sweep = 0; //shoulder
-    public static int pe_Home = 200, pe_Bucket = 1600, pe_SpecimenOut = 0, pe_SpecimenIn = 200, pe_SubmersibleIn = 1600, pe_SubmersibleIntake = 1600, pe_SubmersibleOut = 1600; //pe_Sweep = 1700; // elbow
+    //Shoulder position constants
+    public static int ps_Home = 0;
+    public static int ps_Bucket = 600, ps_SpecimenOut1 = 650, ps_SpecimenOut2 = 400;
+    public static int ps_SpecimenIn1 = 295, ps_SpecimenIn2 = 500, ps_SubmersibleIn = 280, ps_SubmersibleIntake = 180;
+    //Elbow position constants
+    public static int pe_Home = 100;
+    public static int pe_Bucket = 1200;
+    public static int pe_SubmersibleIn = 1600, pe_TuckIn = 400, pe_Observation = 1400;
 
     // TODO: CHANGE
-    public static double shoulderTolerance = 30;
-    public static double elbowTolerance = 30;
+    public static double shoulderTolerance = 15;
+    public static double elbowTolerance = 15;
 
 
     // TODO: Change how you would like it
@@ -98,6 +104,11 @@ public class FeedForwardArmSubsystem extends SubsystemBase {
     public void elbowMoveTo(double target){
         this.elbowTarget = target;
         elbowHoldPosition();
+    }
+    public void elbowSlowTo(double target){
+        this.elbowTarget = target;
+        double power = elbowCalculate();
+        elbow.setPower(power);
     }
 
     public void elbowHoldPosition() {
