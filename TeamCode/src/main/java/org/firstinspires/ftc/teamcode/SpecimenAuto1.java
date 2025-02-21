@@ -38,16 +38,17 @@ public class SpecimenAuto1 extends CommandOpMode {
         Command specimen1Traj = new ActionCommand(specimen1Action, Stream.of(drive).collect(Collectors.toSet()));arm = new FeedForwardArmSubsystem(hardwareMap, telemetry);
 
         Action pushAction = drive.actionBuilder(drive.getPose())
-                .setTangent(360)
-                .splineTo(new Vector2d(-25.76, 37.60), Math.toRadians(209.44))
+                //.setTangent(Math.toRadians(120))
+                //.splineTo(new Vector2d(-25.76, 37.60), Math.toRadians(209.44))
+                .setTangent(Math.toRadians(120))
                 .splineToSplineHeading(new Pose2d(-37.76, 9.44, Math.toRadians(90.00)), Math.toRadians(-90.00))
-                .splineToConstantHeading(new Vector2d(-47.20, 47.04), Math.toRadians(90.00))
-                .splineToConstantHeading(new Vector2d(-44.32, 13.12), Math.toRadians(253.43))
-                .splineToConstantHeading(new Vector2d(-55.84, 47.20), Math.toRadians(91.13))
-                .splineToConstantHeading(new Vector2d(-57.44, 13.44), Math.toRadians(259.86))
-                .splineToConstantHeading(new Vector2d(-66.72, 49.60), Math.toRadians(90.00))
-                .splineToConstantHeading(new Vector2d(-44.16, 48.16), Math.toRadians(6.43))
-                .splineToConstantHeading(new Vector2d(-44.16, 55.04), Math.toRadians(88.00))
+//                .splineToConstantHeading(new Vector2d(-47.20, 47.04), Math.toRadians(90.00))
+//                .splineToConstantHeading(new Vector2d(-44.32, 13.12), Math.toRadians(253.43))+
+//                .splineToConstantHeading(new Vector2d(-55.84, 47.20), Math.toRadians(91.13))
+//                .splineToConstantHeading(new Vector2d(-57.44, 13.44), Math.toRadians(259.86))
+//                .splineToConstantHeading(new Vector2d(-66.72, 49.60), Math.toRadians(90.00))
+//                .splineToConstantHeading(new Vector2d(-44.16, 48.16), Math.toRadians(6.43))
+//                .splineToConstantHeading(new Vector2d(-44.16, 55.04), Math.toRadians(88.00))
                 .build();
         Command pushTraj = new ActionCommand(pushAction, Stream.of(drive).collect(Collectors.toSet()));
 
@@ -97,7 +98,7 @@ public class SpecimenAuto1 extends CommandOpMode {
         Command specimen5OutTraj = new ActionCommand(specimen5OutAction, Stream.of(drive).collect(Collectors.toSet()));
 
         int specInTime = 300;
-        int specOutTime = 200;
+        int specOutTime = 100;
 
         Command auto = new SequentialCommandGroup(
                 new InstantCommand(() -> arm.shoulderMoveTo(arm.ps_SpecimenOut1)),
@@ -105,32 +106,32 @@ public class SpecimenAuto1 extends CommandOpMode {
                 new InstantCommand(() -> arm.shoulderMoveTo(arm.ps_SpecimenIn1)),
                 new WaitCommand(specOutTime),
 
-                pushTraj,
-                new WaitCommand(specInTime),
-                new InstantCommand(() -> arm.shoulderMoveTo(arm.ps_SpecimenOut1)),
-                specimen2OutTraj,
-                new InstantCommand(() -> arm.shoulderMoveTo(arm.ps_SpecimenIn1)),
-                new WaitCommand(specOutTime),
-
-                specimen3InTraj,
-                new WaitCommand(specInTime),
-                new InstantCommand(() -> arm.shoulderMoveTo(arm.ps_SpecimenOut1)),
-                specimen3OutTraj,
-                new InstantCommand(() -> arm.shoulderMoveTo(arm.ps_SpecimenIn1)),
-                new WaitCommand(specOutTime),
-
-                specimen4InTraj,
-                new WaitCommand(specInTime),
-                new InstantCommand(() -> arm.shoulderMoveTo(arm.ps_SpecimenOut1)),
-                specimen4OutTraj,
-                new InstantCommand(() -> arm.shoulderMoveTo(arm.ps_SpecimenIn1)),
-                new WaitCommand(specOutTime),
-
-                specimen5InTraj,
-                new WaitCommand(specInTime),
-                new InstantCommand(() -> arm.shoulderMoveTo(arm.ps_SpecimenOut1)),
-                specimen5OutTraj,
-                new InstantCommand(() -> arm.shoulderMoveTo(arm.ps_SpecimenIn1))
+                pushTraj//,
+//                new WaitCommand(specInTime),
+//                new InstantCommand(() -> arm.shoulderMoveTo(arm.ps_SpecimenOut1)),
+//                specimen2OutTraj,
+//                new InstantCommand(() -> arm.shoulderMoveTo(arm.ps_SpecimenIn1)),
+//                new WaitCommand(specOutTime),
+//
+//                specimen3InTraj,
+//                new WaitCommand(specInTime),
+//                new InstantCommand(() -> arm.shoulderMoveTo(arm.ps_SpecimenOut1)),
+//                specimen3OutTraj,
+//                new InstantCommand(() -> arm.shoulderMoveTo(arm.ps_SpecimenIn1)),
+//                new WaitCommand(specOutTime),
+//
+//                specimen4InTraj,
+//                new WaitCommand(specInTime),
+//                new InstantCommand(() -> arm.shoulderMoveTo(arm.ps_SpecimenOut1)),
+//                specimen4OutTraj,
+//                new InstantCommand(() -> arm.shoulderMoveTo(arm.ps_SpecimenIn1)),
+//                new WaitCommand(specOutTime),
+//
+//                specimen5InTraj,
+//                new WaitCommand(specInTime),
+//                new InstantCommand(() -> arm.shoulderMoveTo(arm.ps_SpecimenOut1)),
+//                specimen5OutTraj,
+//                new InstantCommand(() -> arm.shoulderMoveTo(arm.ps_SpecimenIn1))
         );
         schedule(auto);
 

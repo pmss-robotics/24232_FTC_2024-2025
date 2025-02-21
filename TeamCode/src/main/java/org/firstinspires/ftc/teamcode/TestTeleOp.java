@@ -98,20 +98,16 @@ public class TestTeleOp extends CommandOpMode {
                         new WaitUntilCommand(() ->
                                 Math.abs(arm.shoulder1.getCurrentPosition() - arm.shoulderTarget) <= arm.shoulderTolerance
                         ),
-                        new InstantCommand(() -> arm.elbowMoveTo(arm.pe_SubmersibleIn), arm)
+                        new InstantCommand(() -> arm.elbowMoveTo(arm.pe_SubmersibleIn1), arm)
                 ));
             } else {
                 schedule(new SequentialCommandGroup(
-                        new InstantCommand(() -> arm.shoulderMoveTo(arm.ps_SubmersibleIntake), arm),
+                        new InstantCommand(() -> arm.elbowMoveTo(arm.pe_SubmersibleIn2), arm),
                         new WaitUntilCommand(() ->
                                 Math.abs(arm.shoulder1.getCurrentPosition() - arm.shoulderTarget) <= arm.shoulderTolerance
                         ),
                         new InstantCommand(() -> claw.clawClosed(), claw),
-                        new InstantCommand(() -> arm.shoulderMoveTo(arm.ps_SubmersibleIn), arm),
-                        new WaitUntilCommand(() ->
-                                Math.abs(arm.shoulder1.getCurrentPosition() - arm.shoulderTarget) <= arm.shoulderTolerance
-                        ),
-                        new InstantCommand(() -> arm.elbowMoveTo(arm.pe_SubmersibleIn), arm)
+                        new InstantCommand(() -> arm.elbowMoveTo(arm.pe_SubmersibleOut), arm)
                 ));
             }
             dpadDownStateA = !dpadDownStateA;
@@ -196,7 +192,7 @@ public class TestTeleOp extends CommandOpMode {
         );
 
         // 6. BUTTON A on TOOLS: Arm moves to Bucket to drop a Sample
-        new GamepadButton(tools, GamepadKeys.Button.A).whenPressed(
+        /*new GamepadButton(tools, GamepadKeys.Button.A).whenPressed(
                 new SequentialCommandGroup(
                         new InstantCommand(() -> arm.elbowMoveTo(arm.pe_Home)),
                         new InstantCommand(() -> arm.shoulderMoveTo(arm.ps_Bucket), arm),
@@ -209,11 +205,16 @@ public class TestTeleOp extends CommandOpMode {
                         ),
                         new InstantCommand(() -> claw.setWristPosition(ClawSubsystem.pW180), claw)
                 )
+        );*/
+
+        // 7. BUTTON B on TOOLS: Claw open/close
+        new GamepadButton(tools, GamepadKeys.Button.B).whenPressed(
+                new InstantCommand(() -> claw.changeClawState(), claw)
         );
 
-        // 7. BUTTON B on TOOLS: Simply open
-        new GamepadButton(tools, GamepadKeys.Button.B).whenPressed(
-                new InstantCommand(() -> claw.clawOpen(), claw)
+        // 8. BUTTON X on TOOLS: move up a bit
+        new GamepadButton(tools, GamepadKeys.Button.X).whenPressed(
+                new InstantCommand(() -> arm.shoulderMoveTo(arm.shoulder1.getCurrentPosition() + 30), arm)
         );
 
         // manual shoulder and arm control (optional)
