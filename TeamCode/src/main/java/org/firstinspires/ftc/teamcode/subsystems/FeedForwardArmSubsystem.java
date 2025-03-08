@@ -27,8 +27,8 @@ public class FeedForwardArmSubsystem extends SubsystemBase {
     public static double sP1 = 0.0347, sI1 = 0.000, sD1 = 0.000;
     public static double ks1_Cos = 0.043;
 
-    public static double sP2 = 0.018, sI2 = 0.000, sD2 = 0.001;
-    public static double ks2_Cos = 0.015;
+    public static double sP2 = 0.028, sI2 = 0.000, sD2 = 0.002;
+    public static double ks2_Cos = 0.016;
 
     //elbow
     public static double elbowAngleOffset = 2.3561944902;
@@ -44,21 +44,21 @@ public class FeedForwardArmSubsystem extends SubsystemBase {
 
     //Shoulder position constants
     public static int ps_Home = 0;
-    public static int ps_Bucket = 600, ps_SpecimenOut1 = 650, ps_SpecimenOut2 = 400;
-    public static int ps_SpecimenIn1 = 300, ps_SpecimenIn2 = 500, ps_SubmersibleIn = 280, ps_SubmersibleIntake = 180;
+    public static int ps_Bucket = 600, ps_SpecimenOut1 = 660, ps_SpecimenOut2 = 400;
+    public static int ps_SpecimenIn1 = 320, ps_SpecimenIn2 = 500, ps_SubmersibleIn = 280, ps_SubmersibleIntake = 180;
 
     //Elbow position constants
     public static int pe_Home = 100;
     public static int pe_Bucket = 1200;
-    public static int pe_SubmersibleIn1 = 1750, pe_SubmersibleIn2 = 1790, pe_SubmersibleOut = 1700, pe_TuckIn = 350, pe_Observation = 1400;
+    public static int pe_SubmersibleIn1 = 1750, pe_SubmersibleIn2 = 1850, pe_SubmersibleOut = 1700, pe_TuckIn = 300, pe_Observation = 500;
 
     // TODO: CHANGE
     public static double shoulderTolerance = 15;
     public static double elbowTolerance = 15;
 
-
     // TODO: Change how you would like it
     public static double manualShoulderPower = 1;
+    public static double shoulderHomePower = 1;
 
     public PIDController shoulderPidController, elbowPidController;
     private VoltageSensor voltageSensor;
@@ -107,10 +107,9 @@ public class FeedForwardArmSubsystem extends SubsystemBase {
         this.elbowTarget = target;
         elbowHoldPosition();
     }
-    public void elbowSlowTo(double target){
-        this.elbowTarget = target;
-        double power = elbowCalculate();
-        elbow.setPower(power);
+
+    public void shoulderHome(double power) {
+        shoulderHomePower = power;
     }
 
     public void elbowHoldPosition() {
@@ -168,7 +167,7 @@ public class FeedForwardArmSubsystem extends SubsystemBase {
 
         telemetry.addData("Shoulder Power:", "%.6f", power);
         telemetry.addData("Shoulder Angle:", Math.toDegrees(angle));
-        return power;
+        return power*shoulderHomePower;
     }
 
     /*private double shoulderCalculate() {

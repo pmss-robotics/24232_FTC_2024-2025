@@ -30,8 +30,8 @@ import java.util.Collections;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TestTeleOP", group = "TeleOp")
-public class TestTeleOp extends CommandOpMode {
+@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "OneDriverTeleOP", group = "TeleOp")
+public class OneDriverTeleOp extends CommandOpMode {
 
     GamepadEx driver, tools;
     DriveSubsystem drive;
@@ -134,7 +134,8 @@ public class TestTeleOp extends CommandOpMode {
 
         //drive.drive.pinpoint.resetPosAndIMU()
 
-        // 3. RIGHT_TRIGGER on DRIVER: Release block in observation zone
+        // 3. RIGHT_TRIGGER on DRIVER: Release block in ob
+        // ervation zone
         new Trigger(() -> driver.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) < triggerThreshold).whenActive(
                 new SequentialCommandGroup(
                         new InstantCommand(() -> arm.elbowMoveTo(arm.pe_Observation), arm),
@@ -143,6 +144,11 @@ public class TestTeleOp extends CommandOpMode {
                         ),
                         new InstantCommand(() -> claw.clawOpen(), claw)
                 )
+        );
+
+        // 4. BUTTON B on TOOLS: Rotates the wrist
+        new GamepadButton(driver, GamepadKeys.Button.B).whenPressed(
+                new InstantCommand(() -> claw.changeWristPosition(), claw)
         );
 
         // 4. LEFT_TRIGGER on DRIVER: Simply opens the claw - for Samples
@@ -166,10 +172,7 @@ public class TestTeleOp extends CommandOpMode {
 
 
         //-------------------------------------Gamepad Tools---------------------------------------------
-        // 1. DPAD_DOWN on TOOLS: Rotates the wrist
-        new GamepadButton(tools, GamepadKeys.Button.DPAD_DOWN).whenPressed(
-                new InstantCommand(() -> claw.changeWristPosition(), claw)
-        );
+
 
         // 2. RIGHT TRIGGER on TOOLS: Specimen intake from observation zone
         new Trigger(() -> tools.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) < triggerThreshold).whenActive(

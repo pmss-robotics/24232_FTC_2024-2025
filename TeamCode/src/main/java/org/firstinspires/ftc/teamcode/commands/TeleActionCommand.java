@@ -1,24 +1,27 @@
-package org.firstinspires.ftc.teamcode.commands;
+/*package org.firstinspires.ftc.teamcode.commands;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.arcrobotics.ftclib.command.Command;
-import com.arcrobotics.ftclib.command.Subsystem;
 import com.arcrobotics.ftclib.command.CommandBase;
+import com.arcrobotics.ftclib.command.Subsystem;
 
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
 
 import java.util.Set;
 
-public class ActionCommand implements Command {
+public class TeleActionCommand extends CommandBase {
     private final Action action;
+    private final DriveSubsystem drive;
     private final Set<Subsystem> requirements;
     private boolean finished = false;
 
-    public ActionCommand(Action action, Set<Subsystem> requirements) {
+    public TeleActionCommand(Action action, DriveSubsystem drive, Set<Subsystem> requirements) {
         this.action = action;
+        this.drive = drive;
         this.requirements = requirements;
+        addRequirements(drive);
     }
 
 
@@ -39,4 +42,4 @@ public class ActionCommand implements Command {
     public boolean isFinished() {
         return finished;
     }
-}
+}*/
